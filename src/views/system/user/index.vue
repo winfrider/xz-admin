@@ -5,14 +5,17 @@
                 <el-card class="box-card">
                     <div class="search">
                         <el-row>
-                            <el-col :span="20">
+                            <el-col :span="19">
                                 <el-input 
-                                v-model="searchVal" 
-                                placeholder="搜索内容"></el-input>
+                                v-model="searchVal_1" 
+                                placeholder="搜索内容"
+                                @keyup.native="searchEnter_1"></el-input>
                             </el-col>
                             <el-col :span="3">
                                 <el-button 
                                 icon="el-icon-search" 
+                                class="button-left-circle"
+                                @click="search_1"
                                 circle></el-button>
                             </el-col>
                         </el-row>
@@ -32,11 +35,13 @@
                         <el-row :gutter="10">
                             <el-col :span="8">
                                 <el-input
-                                v-model="searchVal" 
-                                placeholder="搜索内容"></el-input>
+                                v-model="searchVal_2" 
+                                placeholder="搜索内容"
+                                @keyup.native="searchEnter_2"></el-input>
                             </el-col>
                             <el-select 
                                 v-model="selectType" 
+                                clearable
                                 placeholder="类型"
                                 class="select-input">
                                     <el-option
@@ -48,7 +53,9 @@
                             </el-select>
                              <el-select 
                              v-model="selectStatus" 
+                             clearable
                              placeholder="类型"
+                             @change="getStatus"
                              class="select-input">
                                     <el-option
                                     v-for="item in options_2"
@@ -59,10 +66,12 @@
                             </el-select>
                             <el-button 
                                 icon="el-icon-search" 
+                                class="button-left-circle"
                                 circle></el-button>
                             <el-button 
                                 type="primary"
                                 icon="el-icon-plus" 
+                                @click="showAddUser"
                                 circle
                                 ></el-button>
                         </el-row>
@@ -74,7 +83,7 @@
                         label="用户名"
                         >
                         <template slot-scope="scope">
-                            <span style="margin-left: 10px">{{ scope.row.userName }}</span>
+                            <span style="margin-left: 10px">{{ scope.row.username }}</span>
                         </template>
                         </el-table-column>
                         <el-table-column
@@ -102,7 +111,7 @@
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
-                                {{ scope.row.department }}
+                                {{ scope.row.dept.name }}
                             </div>
                         </template>
                         </el-table-column>
@@ -111,8 +120,8 @@
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
-                                <el-tag type="warning">
-                                    {{ scope.row.status }}
+                                <el-tag :type="scope.row.enabled ? '' : 'info'">
+                                    {{ scope.row.enabled ? "正常" : "禁用"}}
                                 </el-tag>
                             </div>
                         </template>
@@ -135,12 +144,12 @@
                             <el-button 
                             type="primary" 
                             icon="el-icon-edit"
-                            @click="handleEdit(scope.$index, scope.row)"
+                            @click="editUserItem(scope.row)"
                             size="small"></el-button>
                             <el-button 
                             type="danger" 
                             icon="el-icon-delete"
-                            @click="handleDelete(scope.$index, scope.row)"
+                            @click="deleteUserItem(scope.row)"
                             size="small"
                             ></el-button>
                         </template>
@@ -160,100 +169,140 @@
                 </el-card>
             </el-col>
         </el-row>
+        <eForm 
+        ref="form" 
+        :is-add="isAdd" 
+        :dicts="dicts"
+        @updateUserList="getUserList"/>
     </div>
 </template>
 
 <script>
+import eForm from './form'
 export default {
+    components: { eForm },
     data() {
         return {
-            searchVal: "",
+            searchVal_1: "",
+            searchVal_2: "",
             selectType: "",
             selectStatus: "",
+            isAdd: true,
+            dicts: [],
             // 当前页数
             nowPage: 1,
             // 当前页条数
             nowSize: 10,
             // 总条数
-            totalElements: 1,
+            totalElements: 0,
             // 部门编号
             deptId: 1,
-            departmentList: [{
-                label: '一级 1',
-                children: [{
-                        label: '二级 1-1',
-                    children: [{
-                        label: '三级 1-1-1'
-                    }]
-                }]
-                }, {
-                label: '一级 2',
-                children: [{
-                    label: '二级 2-1',
-                    children: [{
-                    label: '三级 2-1-1'
-                    }]
-                }, {
-                    label: '二级 2-2',
-                    children: [{
-                    label: '三级 2-2-1'
-                    }]
-                }]
-                }, {
-                label: '一级 3',
-                children: [{
-                    label: '二级 3-1',
-                    children: [{
-                    label: '三级 3-1-1'
-                    }]
-                }, {
-                    label: '二级 3-2',
-                    children: [{
-                    label: '三级 3-2-1'
-                    }]
-                }]
-            }],
+            departmentList: [],
             defaultProps: {
                 children: 'children',
                 label: 'label'
             },
             options_1: [{
-                value: '选项1',
+                value: 'username',
                 label: '用户名'
             },{
-                value: '选项2',
+                value: 'email',
                 label: '邮箱'
             }],
             options_2: [{
-                value: '选项1',
+                value: 'true',
                 label: '激活'
             },{
-                value: '选项2',
+                value: 'false',
                 label: '锁定'
             }],
-            userList: [{
-                userName: "xuanzai",
-                phone: "18024900423",
-                email: "1814899864@qq.com",
-                department: "网维",
-                status: "贼强",
-                createTime: "2019-07-10 12:00"
-            }]
+            userList: []
         }
     },
     created() {
         // 初始化获取部门列表
         this.getDepartmentList()
+        // 获取岗位字典
+        this.getDictsList('user_status')
+        // 获取用户列表
+        this.getUserList()
     },
     methods: {
+        // 删除用户
+        deleteUserItem(item) {
+            this
+                .$showMsgBox({ msg: `<p>是否删除${item.username}用户?</p>`, isHTML: true })
+                .then(() => {
+                    this.$http_json({
+                        url: `/api/user/del/${item.id}`,
+                        method: "post"
+                    }).then(() => {
+                        this.$successMsg('删除成功')
+                        this.getUserList()
+                    })
+                })
+        },
+        // 显示添加菜单窗口
+        showAddUser() {
+            this.isAdd = true
+            this.$refs.form.dialog = true
+            this.$refs.form.resetForm()
+        },
+        // 显示编辑菜单窗口
+        showEditUser() {
+            this.isAdd = false
+            this.$refs.form.dialog = true
+        },
+        // 编辑菜单项
+        editUserItem(item) {
+            const 
+                userItem = this.$refs.form.userForm,
+                component = this.$refs.form
+            userItem.username = item.username
+            userItem.enabled = item.enabled.toString()
+            userItem.phone = item.phone
+            userItem.email = item.email
+            userItem.roles = item.roles
+            component.userId = item.id
+            component.jobId = item.job.id
+            component.deptId = item.job.dept.id
+            component.roleIds = item.roles.map(val => val.id)
+            this.showEditUser()
+        },
+        // 点击搜索
+        search_1() {
+            this.getDepartmentList()
+        },
+        // 回车搜索
+        searchEnter_1(e) {
+            e.keyCode === 13
+            && this.getDepartmentList()
+        },
+        // 点击搜索
+        search_2() {
+            this.selectType
+            ? this.getUserList()
+            : this.$warnMsg('请选择搜索类型')
+        },
+        // 回车搜索
+        searchEnter_2(e) {
+            e.keyCode === 13
+            && (this.selectType
+            ? this.getUserList()
+            : this.$warnMsg('请选择搜索类型'))
+        },
+        // 搜索状态
+        getStatus() {
+            this.getUserList()
+        },
         handleNodeClick(val) {
-            this.deptId = val.deptId
+            this.deptId = val.id
             this.getUserList()
         },
         // 条数变化
         handleSizeChange(size) {
             this.nowSize = size
-            this.getExceptionLogList()
+            this.getUserList()
         },
         // 分页处理
         initialPage(totalElements) {
@@ -262,25 +311,24 @@ export default {
         // 页数变化
         handleCurrentChange(page) {
             this.nowPage = page
-            this.getExceptionLogList()
+            this.getUserList()
         },
-        // 获取用户列表
-        // 初始化错误日志列表
+        // 初始化用户列表
         initialUserList(list) {
             this.userList.splice(0, this.userList.length)
             list.forEach(value => {
                 this.userList.push(value)
             })
         },
-        // 获取错误日志信息
+        // 获取用户列表信息
         getUserList() {
             this.$http_normal({
-                url: `/api/user/page?page=${this.nowPage - 1}&size=${this.nowSize}&sort=createTime,desc&deptId=${this.deptId}`,
+                url: `/api/user/page?page=${this.nowPage - 1}&size=${this.nowSize}&sort=createTime,desc&deptId=${this.deptId}${this.selectType ? `&${this.selectType}=${this.searchVal_2}` : ""}${this.selectStatus ? `&enabled=${this.selectStatus}` : ""}`,
                 method: "get"
             }).then(result => {
                 const data = result.data
                 this.initialPage(data.totalElements)
-                this.initialExceptionLogList(data.content)
+                this.initialUserList(data.content)
             })
         },
         // 初始化错误日志列表
@@ -293,12 +341,20 @@ export default {
         // 获取错误日志信息
         getDepartmentList() {
             this.$http_json({
-                url: `/api/dept/get`,
+                url: `/api/dept/get${this.searchVal_1 ? `?name=${this.searchVal_1}` : ""}`,
                 method: "get"
             }).then(result => {
                 this.initialDepartmentList(result.data.content)
             })
-        }
+        },
+        // 获取岗位字典
+        getDictsList(dictName) {
+            this.$http_json({
+                url: `/api/dictDetail/page?page=0&size=9999&sort=sort,asc&dictName=${dictName}`
+            }).then(result => {
+                this.dicts = result.data.content
+            })
+        },
     }
 }
 </script>

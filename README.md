@@ -15,15 +15,18 @@ http://xzadmin.xuanzai.top
 
 # :muscle: 已对接接口
 
-- 登录接口
+- 登录
 - 系统管理
-  - 字典管理数据的获取
-  - 菜单管理数据的获取
-  - 部门管理数据的获取
-  - 用户管理数据的获取
+  - 字典管理
+  - 菜单管理
+  - 岗位管理
+  - 权限管理
+  - 用户管理
+  - 部门管理
 - 系统监控
   - 操作日志
   - 异常日志 
+  - 权限日志
 
 <br/>
 
@@ -62,3 +65,13 @@ http://xzadmin.xuanzai.top
 + 表格：`VCharts`
 + 数字滚动：`vue-number-scroll`
 + 树状选择器：`vue-treeselect`
+
+<br/>
+
+# :page_with_curl: 已知问题
+
+> 有些图标不能正常显示
+
+原因：因为在`vue.config.js`中加了`svg`处理器，用于处理添加菜单时`svg`图片的显示，所以导致了有些`svg`图标被处理了两次，不能正常显示。
+
+解决方案：node_modules --> iview --> dist --> styles --> iview.css --> 删除`svg`处理代码（ctrl + F 查删）

@@ -14,6 +14,7 @@
                                 v-model="selectType" 
                                 @change="search"
                                 placeholder="类型"
+                                clearable
                                 class="select-input">
                                     <el-option
                                     v-for="item in options"
@@ -24,12 +25,14 @@
                                 </el-select>
                                 <el-button 
                                 icon="el-icon-search" 
+                                class="button-left-circle"
                                 @click="search"
                                 circle></el-button>
                                 <el-button 
                                 circle
                                 type="primary"
                                 icon="el-icon-plus" 
+                                @click="showAddDepartment"
                                 ></el-button>
                         </el-row>
                     </div>
@@ -50,41 +53,37 @@
                         </el-table-column>
                         <el-table-column label="操作" width="130px" align="center">
                             <template slot-scope="scope">
-                            <el-button 
-                            size="small"
-                            type="primary" 
-                            icon="el-icon-edit" 
-                            class="button-right"
-                            @click="edit(scope.row)"/>
-                            <el-popover
-                                :ref="scope.row.id"
-                                placement="top"
-                                width="180">
-                                <p>确定删除本条数据吗？</p>
-                                <div style="text-align: right; margin: 0">
-                                <el-button size="mini" type="text" >取消</el-button>
-                                <el-button :loading="delLoading" type="primary" size="mini" >确定</el-button>
-                                </div>
-                                <el-button slot="reference" :disabled="scope.row.id === 1" type="danger" 
-                                icon="el-icon-delete" 
-                                class="button-left"
-                                size="small"/>
-                            </el-popover>
+                                <el-button 
+                                type="primary" 
+                                icon="el-icon-edit" 
+                                @click="editDepartmentItem(scope.row)"
+                                size="small" 
+                                />
+                                <el-button 
+                                slot="reference" 
+                                type="danger" 
+                                icon="el-icon-delete" size="small"
+                                @click="deleteDepartment(scope.row)"
+                                />
                             </template>
                         </el-table-column>
                         </tree-table>
                 </el-card>
             </el-col>
         </el-row>
-        <!-- <eForm ref="form" :is-add="isAdd"/> -->
+        <eForm 
+        ref="form" 
+        :is-add="isAdd"
+        :dicts="dicts"
+        @updateDepartmentList="getDepartmentList"/>
     </div>
 </template>
 
 <script>
 import treeTable from "@/components/tree_table/tree_table"
-// import eForm from "./form.vue"
+import eForm from "./form.vue"
 export default {
-    components: { treeTable },
+    components: { eForm, treeTable },
     data() {
         return {
             expand: true,
@@ -92,12 +91,13 @@ export default {
             searchVal: "",
             selectType: "",
             isAdd: true,
+            dicts: [],
             departmentList: [],
             options: [{
-                value: true,
+                value: "true",
                 label: '正常'
             },{
-                value: false,
+                value: "false",
                 label: '禁用'
             }],
             columns: [
@@ -111,10 +111,43 @@ export default {
     created() {
         // 初始化获取部门列表
         this.getDepartmentList()
+        // 获取岗位字典
+        this.getDictsList('dept_status')
     },
     methods: {
-        showBox(name) {
+        // 删除岗位
+        deleteDepartment(item) {
+            this
+                .$showMsgBox({ msg: `是否删除${item.name}部门?` })
+                .then(() => {
+                    this.$http_json({
+                        url: `/api/dept/del/${item.id}`,
+                        method: "post"
+                    }).then(() => {
+                        this.$successMsg('删除成功')
+                        this.getDepartmentList()
+                    })
+                })
+        },
+        // 显示添加部门窗口
+        showAddDepartment() {
+            this.isAdd = true
             this.$refs.form.dialog = true
+            this.$refs.form.resetForm()
+        },
+        // 显示编辑部门窗口
+        showEditDepartment() {
+            this.isAdd = false
+            this.$refs.form.dialog = true
+        },
+        // 编辑部门
+        editDepartmentItem(item) {
+            const departmentForm = this.$refs.form.departmentForm
+            this.$refs.form.departmentId = item.id
+            departmentForm.name = item.name
+            departmentForm.enabled = item.enabled.toString()
+            departmentForm.parentId = item.parentId
+            this.showEditDepartment()
         },
         // 点击搜索
         search(val) {
@@ -140,7 +173,15 @@ export default {
             }).then(result => {
                 this.initialDepartmentList(result.data.content)
             })
-        }
+        },
+        // 获取岗位字典
+        getDictsList(dictName) {
+            this.$http_json({
+                url: `/api/dictDetail/page?page=0&size=9999&sort=sort,asc&dictName=${dictName}`
+            }).then(result => {
+                this.dicts = result.data.content
+            })
+        },
     }
 }
 </script>

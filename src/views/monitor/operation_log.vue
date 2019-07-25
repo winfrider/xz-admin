@@ -22,6 +22,7 @@
                         </el-select>
                         <el-button 
                         icon="el-icon-search" 
+                        class="button-left-circle"
                         @click="search"
                         circle
                         ></el-button>
@@ -137,7 +138,7 @@ export default {
             // 当前页条数
             nowSize: 10,
             // 总条数
-            totalElements: 1,
+            totalElements: 0,
             options: [{
                 value: 'username',
                 label: '用户名'

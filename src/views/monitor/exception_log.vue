@@ -23,8 +23,9 @@ import { MessageBox } from 'mint-ui';
                         </el-select>
                         <el-button 
                         icon="el-icon-search" 
-                        circle
-                        @click="search"></el-button>
+                        class="button-left-circle"
+                        @click="search"
+                        circle></el-button>
                     </div>
                     <el-table
                         :data="exceptionLogList"
@@ -101,7 +102,7 @@ import { MessageBox } from 'mint-ui';
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
-                                <el-button @click="showDetail(scope.row.logId)" type="text" size="small">查看详情</el-button>
+                                <el-button @click="showDetail(scope.row.id)" type="text" size="small">查看详情</el-button>
                             </div>
                         </template>
                         </el-table-column>
@@ -121,7 +122,7 @@ import { MessageBox } from 'mint-ui';
             </el-col>
         </el-row>
         <el-dialog
-        title="提示"
+        title="详情信息"
         :visible.sync="dialogVisible"
         :fullscreen="true"
         width="30%"
@@ -143,7 +144,7 @@ export default {
             // 当前页条数
             nowSize: 10,
             // 总条数
-            totalElements: 1,
+            totalElements: 0,
             dialogVisible: false,
             exceptionDetail: "",
             options: [{
@@ -174,9 +175,9 @@ export default {
             : this.$warnMsg('请选择搜索类型'))
         },
         // 显示具体错误信息
-        showDetail(logId) {
+        showDetail(id) {
             this.$http_normal({
-                url: `/log/page/error/${logId}`,
+                url: `/log/page/error/${id}`,
                 method: "get"
             }).then(result => {
                 this.dialogVisible = true

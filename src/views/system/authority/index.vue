@@ -8,36 +8,28 @@
                             <el-input 
                             v-model="searchVal" 
                             placeholder="搜索内容"
-                            class="search-input "></el-input>
-                                <el-select 
-                                v-model="selectVal" 
-                                placeholder="类型"
-                                class="select-input">
-                                    <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                    </el-option>
-                                </el-select>
+                            class="search-input"
+                            @keyup.native="searchEnter"></el-input>
                                 <el-button 
                                 icon="el-icon-search" 
+                                class="button-left-circle"
+                                @click="search" 
                                 circle></el-button>
                                 <el-button 
                                 circle
                                 type="primary"
                                 icon="el-icon-plus" 
-                                @click="showBox('添加菜单')"></el-button>
+                                @click="showAddAuthority()"></el-button>
                         </el-row>
                     </div>
                     <tree-table 
-                    :data="data" 
+                    :data="authorityList" 
                     :expand-all="expand" 
                     :columns="columns" 
                     size="small">
-                        <el-table-column prop="icon" label="别名" align="center">
+                        <el-table-column prop="alias" label="别名">
                             <template slot-scope="scope">
-                            <svg-icon :icon-class="scope.row.icon" />
+                                <span>{{scope.row.alias}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column prop="createTime" label="创建日期" width="150">
@@ -51,31 +43,28 @@
                         align="center"
                         fixed="right">
                             <template slot-scope="scope">
-                            <el-button 
-                             type="primary" 
-                             icon="el-icon-edit" 
-                             @click="edit(scope.row)"
-                             size="small" />
-                            <el-popover
-                                :ref="scope.row.id"
-                                placement="top"
-                                width="200">
-                                <p>确定删除吗,如果存在下级节点则一并删除，此操作不能撤销！</p>
-                                <div style="text-align: right; margin: 0">
-                                <el-button size="mini" type="text" 
-                                >取消</el-button>
-                                <el-button type="primary" size="small" 
-                                >确定</el-button>
-                                </div>
-                                <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini"/>
-                            </el-popover>
+                                <el-button 
+                                type="primary" 
+                                icon="el-icon-edit" 
+                                @click="editAuthorityItem(scope.row)"
+                                size="small" 
+                                />
+                                <el-button 
+                                slot="reference" 
+                                type="danger" 
+                                @click="deleteAuthorityItem(scope.row)"
+                                icon="el-icon-delete" size="small"
+                                />
                             </template>
                         </el-table-column>
                         </tree-table>
                 </el-card>
             </el-col>
         </el-row>
-        <eForm ref="form" :is-add="isAdd"/>
+        <eForm 
+        ref="form" 
+        :is-add="isAdd" 
+        @updateAuthorityList="getAuthorityList"/>
     </div>
 </template>
 
@@ -91,28 +80,78 @@ export default {
             searchVal: "",
             selectVal: "",
             isAdd: true,
-            options: [{
-                value: '选项1',
-                label: '黄金糕'
-            },{
-                value: '选项2',
-                label: '黄金糕'
-            }],
             columns: [
                 {
                     text: '名称',
                     value: 'name'
                 }
             ],
-            data: [
-                
-            ]
+            authorityList: []
         }
     },
+    created() {
+        this.getAuthorityList()
+    },
     methods: {
-        showBox(name) {
+        // 删除权限
+        deleteAuthorityItem(item) {
+            this
+                .$showMsgBox({ msg: `<p>是否删除${item.name}权限?</p><p>如果权限中包含子权限，则会一并删除！</p>`, isHTML: true })
+                .then(() => {
+                    this.$http_json({
+                        url: `/api/permission/del/${item.id}`,
+                        method: "post"
+                    }).then(() => {
+                        this.$successMsg('删除成功')
+                        this.getAuthorityList()
+                    })
+                })
+        },
+        // 显示添加权限窗口
+        showAddAuthority() {
+            this.isAdd = true
             this.$refs.form.dialog = true
-        }
+            this.$refs.form.resetForm()
+        },
+        // 显示编辑权限窗口
+        showEditAuthority() {
+            this.isAdd = false
+            this.$refs.form.dialog = true
+        },
+        // 编辑权限项
+        editAuthorityItem(item) {
+            const authorityItem = this.$refs.form.authorityForm
+            this.$refs.form.authorityId = item.id
+            authorityItem.name = item.name
+            authorityItem.alias = item.alias
+            authorityItem.parentId = item.parentId
+            this.showEditAuthority()
+        },
+        // 点击搜索
+        search() {
+            this.getAuthorityList()
+        },
+        // 回车搜索
+        searchEnter(e) {
+            e.keyCode === 13
+            && this.getAuthorityList()
+        },
+        // 初始化菜单列表
+        initialAuthorityList(list) {
+            this.authorityList.splice(0, this.authorityList.length)
+            list.forEach(value => {
+                this.authorityList.push(value)
+            })
+        },
+        // 获取菜单列表
+        getAuthorityList() {
+            this.$http_json({
+                url: `/api/permission/get?sort=createTime,desc${this.searchVal ? `&name=${this.searchVal}` : ""}`,
+                method: "get"
+            }).then(result => {
+                this.initialAuthorityList(result.data.content)
+            })
+        },
     }
 }
 </script>

@@ -50,6 +50,7 @@ import { element } from 'protractor';
             <Drawer 
             v-show="isSmall" 
             v-model="isMenuCollapse"
+            width="212"
             placement="left">
                 <el-scrollbar style="height:100%">
                     <el-menu 
@@ -61,6 +62,11 @@ import { element } from 'protractor';
                     width="200px"
                     :unique-opened="true"
                     >
+                    <div class="logo" 
+                    v-show="isShowLogo" 
+                    >
+                        <img src="../assets/logo/catjoker.png" alt="logo.png">
+                    </div>
                             <el-menu-item 
                             v-if="!items.children"
                             :index="items.index" 
@@ -269,10 +275,12 @@ export default {
         this.initialListener()
         // 获取视窗大小
         this.getWindowWidth()
-        this.initialTags(),
-        this.initialBreakcrumb(),
-        this.initialScrollTop(true),
-        this.navigateTo(this.tagsList[this.nowIndex].path),
+        this.initialTags()
+        this.initialBreakcrumb()
+        // 获取菜单
+        this.getMenuList()
+        this.initialScrollTop(true)
+        this.navigateTo(this.tagsList[this.nowIndex].path)
         this.$nextTick(() => {
             this.changeTagStyle(this.nowIndex)
         })
@@ -280,12 +288,157 @@ export default {
         this.isShowLogo = this.$getMemoryPmt('isShowLogo') || true
         // 获取浏览器标签页标题
         document.title = this.$getMemorySes('tagTitle') || "欢迎"
-        // 获取菜单
-        this.menuList = this.$store.state.menuList
         // 获取当前活动的标签页
         this.activeIndex = this.tagsList[this.nowIndex].index
     },
     methods: {
+        // 获取菜单列表
+        getMenuList() {
+            this.menuList = [{
+                title: "首页",
+                path: "/home/chart",
+                index: "1",
+                icon: "el-icon-menu"
+            }, {
+                title: "个人中心",
+                path: "/home/person",
+                index: "2",
+                icon: "el-icon-user-solid"
+            }, {
+                title: "文章管理",
+                index: "3",
+                icon: "el-icon-edit",
+                children: [{
+                    title: "文章列表",
+                    path: "/home/article_list",
+                    index: "3-1",
+                    parent: "文章管理",
+                    icon: "el-icon-document-copy"
+                }, {
+                    title: "添加文章",
+                    path: "/home/add_article",
+                    index: "3-2",
+                    parent: "文章管理",
+                    icon: "el-icon-tickets"
+                }, {
+                    title: "文章回收站",
+                    path: "/home/article_recycle",
+                    index: "3-3",
+                    parent: "文章管理",
+                    icon: "el-icon-delete-solid"
+                }]
+            }, {
+                title: "订单管理",
+                index: "4",
+                icon: "el-icon-edit",
+                children: [{
+                    title: "订单列表",
+                    path: "/home/order_list",
+                    index: "4-1",
+                    parent: "订单管理",
+                    icon: "el-icon-document-copy"
+                }, {
+                    title: "添加订单",
+                    path: "/home/add_order",
+                    index: "4-2",
+                    parent: "订单管理",
+                    icon: "el-icon-tickets"
+                }, {
+                    title: "订单回收站",
+                    path: "/home/order_recycle",
+                    index: "4-3",
+                    parent: "订单管理",
+                    icon: "el-icon-delete-solid"
+                }]
+            }, {
+                title: "系统管理",
+                index: "5",
+                icon: "el-icon-edit",
+                children: [{
+                    title: "用户管理",
+                    path: "/home/user_manage",
+                    index: "5-1",
+                    parent: "系统管理",
+                    icon: "el-icon-document-copy"
+                }, {
+                    title: "角色管理",
+                    path: "/home/role_manage",
+                    index: "5-2",
+                    parent: "系统管理",
+                    icon: "el-icon-tickets"
+                }, {
+                title: "权限管理",
+                path: "/home/authority_manage",
+                index: "5-3",
+                parent: "系统管理",
+                icon: "el-icon-delete-solid"
+                }, {
+                    title: "菜单管理",
+                    path: "/home/menu_manage",
+                    index: "5-4",
+                    parent: "系统管理",
+                    icon: "el-icon-delete-solid"
+                }, {
+                title: "字典管理",
+                path: "/home/dictionary_manage",
+                index: "5-5",
+                parent: "系统管理",
+                icon: "el-icon-delete-solid"
+                }, {
+                title: "部门管理",
+                path: "/home/department_manage",
+                index: "5-6",
+                parent: "系统管理",
+                icon: "el-icon-delete-solid"
+                }, {
+                title: "岗位管理",
+                path: "/home/station_manage",
+                index: "5-7",
+                parent: "系统管理",
+                icon: "el-icon-delete-solid"
+                }]
+            }, {
+                title: "系统监控",
+                index: "6",
+                icon: "el-icon-edit",
+                children: [{
+                    title: "操作日志",
+                    path: "/home/operation_log",
+                    index: "6-1",
+                    parent: "系统监控",
+                    icon: "el-icon-document-copy"
+                }, {
+                    title: "异常日志",
+                    path: "/home/exception_log",
+                    index: "6-2",
+                    parent: "系统监控",
+                    icon: "el-icon-tickets"
+                }, {
+                title: "权限日志",
+                path: "/home/authority_log",
+                index: "6-3",
+                parent: "系统监控",
+                icon: "el-icon-tickets"
+            }]
+            },{
+            title: "项目管理",
+            index: "7",
+            icon: "el-icon-edit",
+            children: [{
+                title: "流程图表",
+                path: "/home/project_chart",
+                index: "7-1",
+                parent: "项目管理",
+                icon: "el-icon-document-copy"
+            }]
+            }]
+            // this.$http_json({
+            //     url: "/api/menu/tree",
+            //     method: "get"
+            // }).then(result => {
+            //     console.log(result.data)
+            // })
+        },
         // 跳转至项目地址
         openProject() {
             window.open('https://github.com/MikuBlog/xz-admin')
@@ -487,14 +640,14 @@ export default {
             ? this.isMenuCollapse = !this.isMenuCollapse
             : this.isCollapse = !this.isCollapse
         },
+        // 获取屏幕宽度
         getWindowWidth() {
-            window.innerWidth < 1200
-            && (this.isCollapse = true)
-            window.innerWidth < 900
-            ? this.isSmall = true
+            window.innerWidth < 1100
+            ? (this.isSmall = true, this.isCollapse = true)
             : this.isSmall = false
             this.initialStyle()
         },
+        // 获取滚动高度
         getScrollTop(obj) {
             obj.scrollTop >= 100
             ? this.isShowBackTop = true
@@ -520,7 +673,6 @@ export default {
         position: relative;
         height: 100%;
         background: #eef0f3;
-        overflow-y: auto;
     }
     .el-container {
         position: relative;
@@ -545,9 +697,6 @@ export default {
         color: #686868;
         transition: .3s;
         cursor: pointer;
-    }
-    .menu-button:hover {
-        background: #f8f8f8;
     }
     .el-icon-s-unfold, .el-icon-circle-close {
         transition: .3s;
@@ -624,9 +773,6 @@ export default {
     }
     .iconfullscreenexit:active {
         color: rgb(19, 180, 255);
-    }
-    .icon-box:hover {
-        background: #f8f8f8;
     }
     .el-icon-full-screen {
         font-size: 22px;

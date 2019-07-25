@@ -17,12 +17,13 @@
                     </div>
                     <div class="search">
                         <el-row :gutter="10">
-                            <el-col :span="12">
+                            <el-col :span="12" class="gutter">
                                 <el-input v-model="searchVal_1" placeholder="搜索内容"
                                 @keyup.native="searchEnter_1"></el-input>
                             </el-col>
                                 <el-select 
                                 v-model="selectType_1" 
+                                clearable
                                 placeholder="类型"
                                 class="select-input">
                                     <el-option
@@ -34,6 +35,7 @@
                                 </el-select>
                                 <el-button 
                                 icon="el-icon-search" 
+                                class="button-left-circle"
                                 @click="search_1"
                                 circle></el-button>
                         </el-row>
@@ -66,17 +68,12 @@
                             <el-button 
                             type="primary" 
                             icon="el-icon-edit"
-                            @click="editDictionary(
-                                scope.row.dictId, 
-                                scope.row.name, 
-                                scope.row.remark)"
+                            @click="editDictionary(scope.row)"
                             size="small"></el-button>
                             <el-button 
                             type="danger" 
                             icon="el-icon-delete"
-                            @click="deleteDictionary(
-                                scope.row.name, 
-                                scope.row.dictId)"
+                            @click="deleteDictionary(scope.row)"
                             size="small"
                             ></el-button>
                         </template>
@@ -130,7 +127,7 @@
                         label="所属字典"
                         >
                         <template slot-scope="scope">
-                            <span style="margin-left: 10px">{{ dictName }}</span>
+                            <span style="margin-left: 10px">{{ beloneDictName }}</span>
                         </template>
                         </el-table-column>
                         <el-table-column
@@ -169,18 +166,12 @@
                             <el-button 
                             type="primary" 
                             icon="el-icon-edit"
-                            @click="editDetail(
-                                scope.row.dictDetailId, 
-                                scope.row.label, 
-                                scope.row.value, 
-                                scope.row.sort)"
+                            @click="editDetail(scope.row)"
                             size="small"></el-button>
                             <el-button 
                             type="danger" 
                             icon="el-icon-delete"
-                            @click="deleteDetail(
-                                scope.row.label, 
-                                scope.row.dictDetailId)"
+                            @click="deleteDetail(scope.row)"
                             size="small"
                             ></el-button>
                         </template>
@@ -203,13 +194,11 @@
         <Form-Add 
         ref="formAdd" 
         :isAdd="isAdd_1" 
-        @updateDictionaryList="getDictionaryList">
-        </Form-Add>
+        @updateDictionaryList="getDictionaryList"/>
         <Form-Edit 
         ref="formEdit" 
         :isAdd="isAdd_2"
-        @updateDetailList="getDetailList">
-        </Form-Edit>
+        @updateDetailList="getDetailList"/>
     </div>
 </template>
 
@@ -224,6 +213,7 @@ export default {
             selectType_1: "",
             searchVal_2: "",
             dictName: "",
+            beloneDictName: "",
             isAdd_1: true,
             isAdd_2: true,
             // 当前页数
@@ -231,13 +221,13 @@ export default {
             // 当前页条数
             nowSize_1: 10,
             // 总条数
-            totalElements_1: 1,
+            totalElements_1: 0,
             // 当前页数
             nowPage_2: 1,
             // 当前页条数
             nowSize_2: 10,
             // 总条数
-            totalElements_2: 1,
+            totalElements_2: 0,
             isShowAddBox: false,
             isShowDetailBox: false,
             dictionaryList: [],
@@ -266,6 +256,10 @@ export default {
         },
         // 添加详情
         addDetail() {
+            if(!this.dictName) {
+                this.$warnMsg('请选择字典再进行操作')
+                return
+            }
             this.isAdd_2 = true
             this.$refs.formEdit.detailForm.label = ""
             this.$refs.formEdit.detailForm.value = ""
@@ -273,47 +267,47 @@ export default {
             this.showDetailBox()
         },
         // 编辑字典
-        editDictionary(id, name, remark) {
+        editDictionary(item) {
             this.isAdd_1 = false
-            this.$refs.formAdd.dictId = id
-            this.$refs.formAdd.addForm.name = name
-            this.$refs.formAdd.addForm.remark = remark
+            this.$refs.formAdd.id = item.id
+            this.$refs.formAdd.addForm.name = item.name
+            this.$refs.formAdd.addForm.remark = item.remark
             this.showAddBox()
         },
         // 编辑字典详情
-        editDetail(id, label, value, sort) {
+        editDetail(item) {
             this.isAdd_2 = false
-            this.$refs.formEdit.dictDetailId = id
-            this.$refs.formEdit.detailForm.label = label
-            this.$refs.formEdit.detailForm.value = value
-            this.$refs.formEdit.detailForm.sort = sort
+            this.$refs.formEdit.id = item.id
+            this.$refs.formEdit.detailForm.label = item.label
+            this.$refs.formEdit.detailForm.value = item.value
+            this.$refs.formEdit.detailForm.sort = item.sort
             this.showDetailBox()
         },
         // 删除字典
-        deleteDictionary(name, id) {
+        deleteDictionary(item) {
             this
-                .$showMsgBox({ msg: `是否删除字典${name}?` })
+                .$showMsgBox({ msg: `是否删除${item.name}字典?` })
                 .then(() => {
                     this.$http_json({
-                        url: `/api/dict/del/${id}`,
+                        url: `/api/dict/del/${item.id}`,
                         method: "post"
-                    }).then(result => {
+                    }).then(() => {
                         this.$successMsg('删除成功')
                         this.getDictionaryList()
                     })  
                 })
         },
         // 删除字典详情
-        deleteDetail(label, id) {
+        deleteDetail(item) {
             this
-                .$showMsgBox({ msg: `是否删除字典详情${label}?` })
+                .$showMsgBox({ msg: `是否删除${item.label}字典详情?` })
                 .then(() => {
                     this.$http_json({
-                        url: `/api/dictDetail/del/${id}`,
+                        url: `/api/dictDetail/del/${item.id}`,
                         method: "post"
                     }).then(result => {
                         this.$successMsg('删除成功')
-                        this.getDictionaryList()
+                        this.getDetailList()
                     })  
                 })
         },
@@ -345,7 +339,6 @@ export default {
         search_2() {
             this.getDetailList()
         },
-        // 回车搜索
         // 条数变化
         handleSizeChange_1(size) {
             this.nowSize_1 = size
@@ -378,7 +371,7 @@ export default {
         // 获取字典信息
         getDictionaryList() {
             this.$http_normal({
-                url: `/api/dict/page?page=${this.nowPage_1 - 1}&size=${this.nowSize_1}${this.selectType_1 ? `&${this.selectType_1}=${this.searchVal_1}` : ""}`,
+                url: `/api/dict/page?page=${this.nowPage_1 - 1}&size=${this.nowSize_1}&sort=createTime,desc${this.selectType_1 ? `&${this.selectType_1}=${this.searchVal_1}` : ""}`,
                 method: "get"
             }).then(result => {
                 const data = result.data
@@ -396,10 +389,11 @@ export default {
         // 获取字典详情信息
         getDetailList() {
             this.$http_normal({
-                url: `/api/dictDetail/page?page=${this.nowPage_2 - 1}&size=${this.nowSize_2}&dictName=${this.dictName}&label=${this.searchVal_2}`,
+                url: `/api/dictDetail/page?page=${this.nowPage_2 - 1}&size=${this.nowSize_2}&sort=sort,asc&dictName=${this.dictName}${this.searchVal_2 ? `&label=${this.searchVal_2}` : ""}`,
                 method: "get"
             }).then(result => {
                 const data = result.data
+                this.beloneDictName = this.dictName
                 this.initialPage('totalElements_2', data.totalElements)
                 this.initialDetailList(data.content)
             })
@@ -408,9 +402,9 @@ export default {
         getDictName(row) {
             this.dictName = row.name
             this.$refs.formEdit.detailForm.dict = {
-                dictId: row.dictId
+                id: row.id
             }
-            this.getDetailList()
+            this.getDetailList(row.name)
         } 
     }
 }
@@ -420,5 +414,8 @@ export default {
     .title {
         position: relative;
         font-size: 1rem;
+    }
+    .gutter {
+        padding: 0 !important;
     }
 </style>
