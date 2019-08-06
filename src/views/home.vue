@@ -1,4 +1,3 @@
-import { element } from 'protractor';
 <template>
     <div class="home" ref="home" id="home">
         <el-container>
@@ -6,45 +5,20 @@ import { element } from 'protractor';
             style="height:100%" 
             v-show="!isSmall">
                 <el-menu 
-                :default-active="activeIndex" 
+                :default-active="$store.state.menuIndex" 
                 :collapse="isCollapse"
-                class="el-menu-vertical-demo menu-list" 
+                class="el-menu-vertical-demo" 
                 background-color="#2f4055"
                 active-text-color="#429ee2"
                 text-color="#becad8"
-                width="200px"
                 :unique-opened="true"
                 >
                     <div class="logo" v-show="isShowLogo" v-if="!isCollapse">
                         <img src="../assets/logo/catjoker.png" alt="logo.png">
                     </div>
-                        <el-menu-item 
-                        v-if="!items.children"
-                        :index="items.index" 
-                        @click="clickMenuItem(items.path, items.title, items.index, items.parent)" 
-                        v-for="items in menuList"
-                        >
-                            <i :class="items.icon"></i>
-                            <span slot="title">{{items.title}}</span>
-                        </el-menu-item>
-                        <el-submenu 
-                        :index="items.index" 
-                        v-if="items.children"
-                        v-for="items in menuList">
-                            <template slot="title">
-                                <i :class="items.icon"></i>
-                                <span>{{items.title}}</span>
-                            </template>
-                            <el-menu-item-group>
-                                <el-menu-item 
-                                :index="child.index" 
-                                @click="clickMenuItem(child.path, child.title, child.index, child.parent)"
-                                 v-for="child in items.children">
-                                    <i :class="child.icon"></i>
-                                    <span slot="title">{{child.title}}</span>
-                                </el-menu-item>
-                            </el-menu-item-group>
-                        </el-submenu>
+                    <NavMenu 
+                    :navMenus="$store.state.menuList"
+                    ></NavMenu>
                 </el-menu>
             </el-scrollbar>
             <Drawer 
@@ -54,50 +28,28 @@ import { element } from 'protractor';
             placement="left">
                 <el-scrollbar style="height:100%">
                     <el-menu 
-                    :default-active="activeIndex" 
+                    :default-active="$store.state.menuIndex" 
                     class="el-menu-vertical-demo menu-list" 
                     background-color="#2f4055"
                     active-text-color="#429ee2"
                     text-color="#becad8"
                     width="200px"
                     :unique-opened="true"
+                    @select="clickMenuItem"
                     >
-                    <div class="logo" 
-                    v-show="isShowLogo" 
-                    >
-                        <img src="../assets/logo/catjoker.png" alt="logo.png">
-                    </div>
-                            <el-menu-item 
-                            v-if="!items.children"
-                            :index="items.index" 
-                            @click="clickMenuItem(items.path, items.title, items.index, items.parent)" 
-                            v-for="items in menuList">
-                                <i :class="items.icon"></i>
-                                <span slot="title">{{items.title}}</span>
-                            </el-menu-item>
-                            <el-submenu 
-                            :index="items.index" 
-                            v-if="items.children"
-                            v-for="items in menuList">
-                                <template slot="title">
-                                    <i :class="items.icon"></i>
-                                    <span>{{items.title}}</span>
-                                </template>
-                                <el-menu-item-group>
-                                    <el-menu-item 
-                                    :index="child.index"
-                                    @click="clickMenuItem(child.path, child.title, child.index, child.parent)"
-                                    v-for="child in items.children">
-                                        <i :class="child.icon"></i>
-                                        <span slot="title">{{child.title}}</span>
-                                    </el-menu-item>
-                                </el-menu-item-group>
-                            </el-submenu>
+                        <div class="logo" 
+                        v-show="isShowLogo" 
+                        >
+                            <img src="../assets/logo/catjoker.png" alt="logo.png">
+                        </div>
+                        <NavMenu 
+                        :navMenus="$store.state.menuList"
+                        ></NavMenu>
                     </el-menu>
                 </el-scrollbar>
             </Drawer>
             <el-container>
-                <el-header>
+                <el-header style="height: 50px;">
                     <div class="navbar">
                         <div class="menu-button">
                             <el-tooltip 
@@ -121,14 +73,7 @@ import { element } from 'protractor';
                             </el-tooltip>
                         </div>
                         <div class="breadcrumb">
-                            <el-breadcrumb separator-class="el-icon-arrow-right">
-                                <el-breadcrumb-item 
-                                :to="{ path: '/home/chart' }"
-                                @click.native="addBreakcrumb()">首页</el-breadcrumb-item>
-                                <el-breadcrumb-item 
-                                v-for="items in breadcrumbList"
-                                >{{items}}</el-breadcrumb-item>
-                            </el-breadcrumb>
+                            <Breadcrumb></Breadcrumb>
                         </div>
                         <div class="icon-box">
                             <el-tooltip 
@@ -150,8 +95,8 @@ import { element } from 'protractor';
                                 ></span>
                             </el-tooltip>
                         </div>
-                        <div class="avatar-box">
-                            <el-dropdown trigger="click">
+                        <el-dropdown trigger="click">
+                            <div class="avatar-box">
                                 <div class="block">
                                     <el-avatar 
                                     shape="square" 
@@ -163,41 +108,32 @@ import { element } from 'protractor';
                                 <i class="el-icon-caret-bottom el-icon--right"></i>
                                 <el-dropdown-menu slot="dropdown">
                                     <el-dropdown-item
-                                    @click.native="clickMenuItem('/home/chart', '首页', '1')">首页</el-dropdown-item>
-                                    <el-dropdown-item @click.native="clickMenuItem('/home/person', '个人中心', '2')"><span>个人中心</span></el-dropdown-item>
-                                    <el-dropdown-item
-                                    @click.native="openProject">
+                                    @click.native="navigateTo('/home/welcome')"
+                                    >首页
+                                    </el-dropdown-item>
+                                    <el-dropdown-item @click.native="navigateTo('/home/person')">
+                                        个人中心
+                                    </el-dropdown-item>
+                                    <el-dropdown-item @click.native="openNewPage()">
                                         项目地址
                                     </el-dropdown-item>
                                     <div class="line"></div>
                                     <el-dropdown-item
                                     @click.native="logout">退出登录</el-dropdown-item>
                                 </el-dropdown-menu>
-                            </el-dropdown>
-                        </div>
+                            </div>
+                        </el-dropdown>
                     </div>
+                    <div class="border" style="border-color: #f0f0f0"></div>
                 </el-header>
-                <el-header>
-                    <div class="tabs">
-                        <el-scrollbar
-                        style="height: 50px;" 
-                        >
-                            <Tag 
-                            color="primary"
-                            type="dot"
-                            closable
-                            checkable
-                            v-for="(items, index) in tagsList" 
-                            :name="items.title"
-                            @on-close="tabsRemove"
-                            @on-change="tabsClick(items.path, index, items.index, items.title, items.parent)"
-                            >{{items.title}}</Tag>
-                        </el-scrollbar>
-                    </div>
-                </el-header>
+                <div class="tabs">
+                    <Tag :tagsList="$store.state.tagsList" />
+                </div>
                 <el-main class="top" id="top">
                     <transition name="xz-animation">
-                        <router-view class="router"/>
+                        <router-view 
+                        @updateUserInfo="getUserInfo"
+                        class="router"/>
                     </transition>
                     <div class="back-top">
                         <el-button 
@@ -239,7 +175,6 @@ import { element } from 'protractor';
                 <el-button 
                 type="success" 
                 style="width: 100%"
-                @click="uploadLogo"
                 >上传Logo</el-button>
             </div>
         </Drawer>
@@ -247,7 +182,12 @@ import { element } from 'protractor';
 </template>
 
 <script>
+import NavMenu from '@/components/tree_menu/SidebarItem'
+import Breadcrumb from '@/components/breadcrumb'
+import Tag from '@/components/tag'
+import store from '@/store/store'
 export default {
+    components: { NavMenu, Breadcrumb, Tag },
     data() {
         return {
             isCollapse: false,
@@ -258,200 +198,56 @@ export default {
             isShowLogo: true,
             isShowBackTop: false,
             logoUrl: "",
-            menuList: [],
-            breadcrumbList: [],
-            tagsList: [{
-                title: "首页",
-                path: "/home/chart",
-                index: "1"
-            }],
-            nowIndex: this.$getMemorySes('nowIndex') || 0,
-            activeIndex: "1",
-            squareUrl: "https://myinterface.xuanzai.top/getPicture?type=头像&id=8",
+            tagsList: this.$store.state.tagsList,
+            user: {},
+            squareUrl: "",
+            menuList:[{
+                meta: {
+                    title: "首页"
+                },
+                iframe: false,
+                icon: "主页",
+                path: "/home/welcome"
+            }]
         }
+    },
+    created() {
+        // 获取用户信息
+        this.getUserInfo()
     },
     mounted() {
         this.initialStyle()
         this.initialListener()
         // 获取视窗大小
         this.getWindowWidth()
-        this.initialTags()
-        this.initialBreakcrumb()
-        // 获取菜单
-        this.getMenuList()
-        this.initialScrollTop(true)
-        this.navigateTo(this.tagsList[this.nowIndex].path)
-        this.$nextTick(() => {
-            this.changeTagStyle(this.nowIndex)
-        })
         // 是否显示Logo
         this.isShowLogo = this.$getMemoryPmt('isShowLogo') || true
-        // 获取浏览器标签页标题
-        document.title = this.$getMemorySes('tagTitle') || "欢迎"
-        // 获取当前活动的标签页
-        this.activeIndex = this.tagsList[this.nowIndex].index
     },
     methods: {
-        // 获取菜单列表
-        getMenuList() {
-            this.menuList = [{
-                title: "首页",
-                path: "/home/chart",
-                index: "1",
-                icon: "el-icon-menu"
-            }, {
-                title: "个人中心",
-                path: "/home/person",
-                index: "2",
-                icon: "el-icon-user-solid"
-            }, {
-                title: "文章管理",
-                index: "3",
-                icon: "el-icon-edit",
-                children: [{
-                    title: "文章列表",
-                    path: "/home/article_list",
-                    index: "3-1",
-                    parent: "文章管理",
-                    icon: "el-icon-document-copy"
-                }, {
-                    title: "添加文章",
-                    path: "/home/add_article",
-                    index: "3-2",
-                    parent: "文章管理",
-                    icon: "el-icon-tickets"
-                }, {
-                    title: "文章回收站",
-                    path: "/home/article_recycle",
-                    index: "3-3",
-                    parent: "文章管理",
-                    icon: "el-icon-delete-solid"
-                }]
-            }, {
-                title: "订单管理",
-                index: "4",
-                icon: "el-icon-edit",
-                children: [{
-                    title: "订单列表",
-                    path: "/home/order_list",
-                    index: "4-1",
-                    parent: "订单管理",
-                    icon: "el-icon-document-copy"
-                }, {
-                    title: "添加订单",
-                    path: "/home/add_order",
-                    index: "4-2",
-                    parent: "订单管理",
-                    icon: "el-icon-tickets"
-                }, {
-                    title: "订单回收站",
-                    path: "/home/order_recycle",
-                    index: "4-3",
-                    parent: "订单管理",
-                    icon: "el-icon-delete-solid"
-                }]
-            }, {
-                title: "系统管理",
-                index: "5",
-                icon: "el-icon-edit",
-                children: [{
-                    title: "用户管理",
-                    path: "/home/user_manage",
-                    index: "5-1",
-                    parent: "系统管理",
-                    icon: "el-icon-document-copy"
-                }, {
-                    title: "角色管理",
-                    path: "/home/role_manage",
-                    index: "5-2",
-                    parent: "系统管理",
-                    icon: "el-icon-tickets"
-                }, {
-                title: "权限管理",
-                path: "/home/authority_manage",
-                index: "5-3",
-                parent: "系统管理",
-                icon: "el-icon-delete-solid"
-                }, {
-                    title: "菜单管理",
-                    path: "/home/menu_manage",
-                    index: "5-4",
-                    parent: "系统管理",
-                    icon: "el-icon-delete-solid"
-                }, {
-                title: "字典管理",
-                path: "/home/dictionary_manage",
-                index: "5-5",
-                parent: "系统管理",
-                icon: "el-icon-delete-solid"
-                }, {
-                title: "部门管理",
-                path: "/home/department_manage",
-                index: "5-6",
-                parent: "系统管理",
-                icon: "el-icon-delete-solid"
-                }, {
-                title: "岗位管理",
-                path: "/home/station_manage",
-                index: "5-7",
-                parent: "系统管理",
-                icon: "el-icon-delete-solid"
-                }]
-            }, {
-                title: "系统监控",
-                index: "6",
-                icon: "el-icon-edit",
-                children: [{
-                    title: "操作日志",
-                    path: "/home/operation_log",
-                    index: "6-1",
-                    parent: "系统监控",
-                    icon: "el-icon-document-copy"
-                }, {
-                    title: "异常日志",
-                    path: "/home/exception_log",
-                    index: "6-2",
-                    parent: "系统监控",
-                    icon: "el-icon-tickets"
-                }, {
-                title: "权限日志",
-                path: "/home/authority_log",
-                index: "6-3",
-                parent: "系统监控",
-                icon: "el-icon-tickets"
-            }]
-            },{
-            title: "项目管理",
-            index: "7",
-            icon: "el-icon-edit",
-            children: [{
-                title: "流程图表",
-                path: "/home/project_chart",
-                index: "7-1",
-                parent: "项目管理",
-                icon: "el-icon-document-copy"
-            }]
-            }]
-            // this.$http_json({
-            //     url: "/api/menu/tree",
-            //     method: "get"
-            // }).then(result => {
-            //     console.log(result.data)
-            // })
-        },
-        // 跳转至项目地址
-        openProject() {
-            window.open('https://github.com/MikuBlog/xz-admin')
+        // 获取用户信息
+        getUserInfo() {       
+            this.$http_json({
+                url: "/auth/info",
+                method: "get"
+            }).then(result => {
+                this.$store.commit("setUserInfo", result.data)
+                this.user = this.$store.state.user
+                this.squareUrl = this.user.avatar
+            })
         },
         // 返回顶部
         backTop(delay = 500) {
             this.$$('.top').animate({scrollTop: 0}, delay)
         },
+        // 前往项目地址
+        openNewPage() {
+            window.open('https://github.com/MikuBlog/xz-admin')
+        },
         // 退出登录
         logout() {
             // 退出前先清空用户访问记录
-            this.deleteMsg()
-            this.$router.push({path: '/login'})
+            this.$setMemoryPmt('token', '')
+            this.$router.push({ path: '/login' })
         },
         // 选择图片
         selectPic() {
@@ -464,10 +260,6 @@ export default {
                     this.$warnMsg(e)
                 })
         },
-        // 上传logo
-        uploadLogo() {
-
-        },
         // 全局设置显示菜单Logo
         showLogo(val) {
             this.$setMemoryPmt('isShowLogo', val)
@@ -476,137 +268,18 @@ export default {
         showSetting() {
             this.isSetting = true
         },
-        // 清空所有用户访问记录
-        deleteMsg() {
-            this.$setMemoryPmt('token', '')
-            this.$clearMemorySes()
-        },
-        // 保存当前用户访问记录
-        saveMsg() {
-            this.$setMemorySes('tagsList', this.tagsList)
-            this.$setMemorySes('nowIndex', this.nowIndex)
-            this.$setMemorySes('tagTitle', document.title)
-            this.$setMemorySes('breadcrumbList', this.breadcrumbList)
-        },
-        // 初始化标签页
-        initialTags() {
-            let tagsList = this.$getMemorySes('tagsList')
-            tagsList
-            && (this.tagsList.splice(0, this.tagsList.length),
-            tagsList.forEach(value => {
-                this.tagsList.push(value)
-            }))
-        },
-        // 初始化面包屑
-        initialBreakcrumb() {
-            let breadcrumbList = this.$getMemorySes('breadcrumbList')
-            breadcrumbList
-            && (this.breadcrumbList.splice(0, this.breadcrumbList.length),
-            breadcrumbList.forEach(value => {
-                this.breadcrumbList.push(value)
-            }))
-        },
-        // 初始化当前滚动高度
-        initialScrollTop(isIntial = false) {
-            isIntial 
-            ? document.querySelector('.top').scrollTop = this.$getMemorySes('scrollTop')
-            : setTimeout(() => {
-                document.querySelector('.top').scrollTop = 0
-            }, 700)
-        },
-        // 改变标签样式
-        changeTagStyle(index) {
-            let dots = document.querySelectorAll('.ivu-tag-dot-inner')
-            dots.forEach((value, ind) => {
-                index == ind
-                ? this.$setStyle(value, 'display', 'inline-block')
-                : this.$setStyle(value, 'display', 'none')
-            })
-            this.nowIndex = index
-        },
-        // 添加面包屑
-        addBreakcrumb(title, parent) {
-            this.breadcrumbList.splice(0, this.breadcrumbList.length)
-            parent
-            && this.breadcrumbList.push(parent)
-            title && title != "首页"
-            && this.breadcrumbList.push(title)
-            !parent && !title
-            && (this.changeTagStyle(0), this.activeIndex = 1) 
-        },
-        // 点击标签
-        tabsClick(path, index, menuInd, title, parent) {
-            document.title = title
-            this.nowIndex = index
-            this.activeIndex = menuInd
-            this.addBreakcrumb(title, parent)
-            this.changeTagStyle(index)
-            this.navigateTo(path)
-            this.initialScrollTop()
-            this.saveMsg()
-        },
         // 移除所有标签
         removeAllTags() {
-            this.tagsList.splice(1, this.nowIndex - 1)
-            this.nowIndex == 0
-            ? (this.tagsList.splice(1), this.changeTagStyle(0))
-            : (this.tagsList.splice(2), this.changeTagStyle(1))
-            this.saveMsg()
+            this.tagsList.splice(1)
+            this.navigateTo('/home/welcome')
         },
-        // 移除标签
-        tabsRemove(event, title) {
-            for(let i = 0, len = this.tagsList.length; i < len; i ++) {
-                if(title == this.tagsList[i].title) {
-                    this.tagsList.splice(i, 1)
-                    this.changeTagStyle(this.nowIndex)
-                    i == this.nowIndex
-                    && (this.$router.push({path: `${this.tagsList[i-1].path}`}), this.changeTagStyle(this.nowIndex - 1))
-                    this.saveMsg()
-                    return
-                }    
-            }
-        },
-        // 添加标签
-        addTag(path, title, index, parent) {
-            let tabs = this.tagsList
-            for(let i = 0, len = tabs.length; i < len; i ++) {
-                if(tabs[i].title == title) return
-            }
-            this.tagsList.push({
-                title: title,
-                path: path,
-                index: index,
-                parent: parent
-            })
-            this.nowIndex = this.tagsList.length - 1
-            this.saveMsg()
+        // 点击隐藏左侧抽屉菜单
+        clickMenuItem() {
+            this.isMenuCollapse = false
         },
         // 跳转路由
         navigateTo(path) {
-            if(this.$route.path == path) return
-            this.$Loading.finish()
             this.$router.push({ path })
-        },
-        // 判断当前点击的菜单在哪个标签
-        findIndex(title) {
-            let tags = this.tagsList
-            for(let i = 0, len = tags.length; i < len; i ++) {
-                if(tags[i].title == title) {
-                    this.nowIndex = i
-                }
-            }
-        },
-        // 点击菜单项
-        clickMenuItem(path, title, index, parent) {
-            document.title = title
-            this.isMenuCollapse = false
-            this.addTag(path, title, index, parent)
-            this.navigateTo(path)
-            this.initialScrollTop()
-            this.findIndex(title)
-            this.changeTagStyle(this.nowIndex)
-            this.addBreakcrumb(title, parent)
-            this.saveMsg()
         },
         // 设置全屏与取消全屏
         fullScreen() {
@@ -621,12 +294,11 @@ export default {
             const 
                 eles = document.querySelectorAll('.el-scrollbar__wrap'),
                 drawer = document.querySelector('.ivu-drawer-body'),
-                tag = document.querySelector('.ivu-tag'),
                 menuList = document.querySelector('.el-menu-vertical-demo'),
                 drawerContent = document.querySelector('.ivu-drawer-content'),
-                scrollContainer = document.querySelector('.el-scrollbar')
+                scrollContainer = document.querySelector('.el-scrollbar'),
+                scrollBar = document.querySelectorAll('.el-scrollbar__thumb')[1]
             this.$setStyle(drawer, 'padding', 0)
-            this.$setStyle(tag.lastElementChild, 'display', 'none')
             this.$setStyle(drawerContent, 'background', '#2e3f54')
             this.$setStyle(scrollContainer, 'background', '#2d3e53')
             eles.forEach((value, index) => {
@@ -638,14 +310,13 @@ export default {
         showMenu() {
             this.isSmall
             ? this.isMenuCollapse = !this.isMenuCollapse
-            : this.isCollapse = !this.isCollapse
+            : (this.isCollapse = !this.isCollapse)
         },
         // 获取屏幕宽度
         getWindowWidth() {
             window.innerWidth < 1100
             ? (this.isSmall = true, this.isCollapse = true)
             : this.isSmall = false
-            this.initialStyle()
         },
         // 获取滚动高度
         getScrollTop(obj) {
@@ -691,8 +362,9 @@ export default {
     .menu-button {
         position: relative;
         display: inline-block;
-        padding: 0 1rem;
-        top:3px;
+        margin-left: 1rem;
+        height: 50px;
+        line-height: 50px;
         font-size: 1.5rem;
         color: #686868;
         transition: .3s;
@@ -719,15 +391,10 @@ export default {
         left: 100px;
         top: 21px;
     }
-    .avatar-box {
+    .el-dropdown {
         position: absolute;
         top: 0;
-        right: 10px;
-        width: 60px;
-        height: 50px;
-    }
-    .el-dropdown {
-        position: relative;
+        right: 0;
         width: 60px;
         height: 50px;
     }
@@ -740,15 +407,19 @@ export default {
         height: 0;
         border: 1px solid #eee;
     }
+    .tabs {
+        position: relative;
+        background: #ffffff;
+    }
     .el-icon-caret-bottom {
         position: absolute;
-        right: -2px;
-        bottom: 5px;
+        right: 0;
+        bottom: 3px;
     }
     .icon-box {
         position: absolute;
         top:3px;
-        right: 75px;
+        right: 60px;
         padding: 0 1rem;
         height: 50px;
         line-height: 50px;
@@ -776,18 +447,6 @@ export default {
     }
     .el-icon-full-screen {
         font-size: 22px;
-    }
-    .el-header:last-of-type {
-        height: 41px!important;
-    }
-    .tabs {
-        position: relative;
-        margin-left: 10px;
-        white-space: nowrap;
-        overflow: hidden;
-    }
-    .el-scrollbar__view {
-        overflow: hidden!important;
     }
     .logo {
         position: relative;
@@ -826,7 +485,7 @@ export default {
         bottom: 100px;
     }
     .xz-animation-enter-active {
-        transition: all .6s .6s;
+        transition: all .6s .7s;
     }
     .xz-animation-leave-active {
         transition: all .6s;

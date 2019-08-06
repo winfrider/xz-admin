@@ -1,9 +1,19 @@
 # :smirk: 页面浏览 
 
-http://xzadmin.xuanzai.top
+https://xzadmin.xuanzai.top
 
-账号：admin
+账号：xuanzai
 密码：123456
+
+<br/>
+
+# :star: 安装步骤
+
+安装：在项目目录下`npm install`
+
+运行：在项目目录下`npm run serve`
+
+如有问题，请看[已知问题列表](#question)
 
 <br/>
 
@@ -23,10 +33,15 @@ http://xzadmin.xuanzai.top
   - 权限管理
   - 用户管理
   - 部门管理
-- 系统监控
+  - 权限管理
+- 日志管理
   - 操作日志
   - 异常日志 
   - 权限日志
+- 系统监控
+  - 系统缓存
+- 系统工具
+  - 图片管理
 
 <br/>
 
@@ -34,13 +49,7 @@ http://xzadmin.xuanzai.top
 
 + 个性化登录界面
 + 个性化后台管理界面
-+ 标签管理
-+ 动态路由
-+ 动态菜单
-+ 面包屑管理
-+ 自动登录
-+ 无权限自动跳转回登录页面
-+ 退出登录清空上一用户的所有访问记录
++ 路由与标签页、菜单、面包屑关联（vue-router）
 
 <br/>
 
@@ -62,16 +71,27 @@ http://xzadmin.xuanzai.top
 # :electric_plug: 插件
 
 + 富文本编辑器：`UEditor`
-+ 表格：`VCharts`
++ 图表：`VCharts`
 + 数字滚动：`vue-number-scroll`
 + 树状选择器：`vue-treeselect`
++ 动态菜单折叠插件：`vue-fragment`
++ 进度条：`nprogress`
++ markdown编辑器：`mavonEditor`
 
 <br/>
 
-# :page_with_curl: 已知问题
 
-> 有些图标不能正常显示
+<h1 id="question">:page_with_curl: 已知问题</h1>
 
-原因：因为在`vue.config.js`中加了`svg`处理器，用于处理添加菜单时`svg`图片的显示，所以导致了有些`svg`图标被处理了两次，不能正常显示。
+<br/>
 
-解决方案：node_modules --> iview --> dist --> styles --> iview.css --> 删除`svg`处理代码（ctrl + F 查删）
+> Module build failed (from ./node_modules/_svg-sprite-loader@4.1.6@svg-sprite-loader/lib/loader.js)
+
+原因：引入了`svg-loader`，对已经处理过的`svg`再次进行处理导致报错
+
+解决方案：类似这种问题，看看引入的全局`CSS`或自己写的`CSS`文件里有没有类似这样的语句：`url(xxxxx) format("truetype")) format("svg")`，如果有，则直接删除即可。
+
++ `mavonEditor`中的`index.css`中含有该组件，如果要继续使用`mavonEditor`markdown编辑器，请在`node_modules --> mavon-editor --> dist --> index.css`删除如上代码。
+
+
+

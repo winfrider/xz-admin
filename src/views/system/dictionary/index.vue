@@ -17,15 +17,15 @@
                     </div>
                     <div class="search">
                         <el-row :gutter="10">
-                            <el-col :span="12" class="gutter">
-                                <el-input v-model="searchVal_1" placeholder="搜索内容"
+                                <el-input v-model="searchVal_1" 
+                                class="search-input margin-box"
+                                placeholder="请选择类型进行搜索"
                                 @keyup.native="searchEnter_1"></el-input>
-                            </el-col>
                                 <el-select 
                                 v-model="selectType_1" 
                                 clearable
                                 placeholder="类型"
-                                class="select-input">
+                                class="select-input margin-box">
                                     <el-option
                                     v-for="item in options"
                                     :key="item.value"
@@ -35,7 +35,7 @@
                                 </el-select>
                                 <el-button 
                                 icon="el-icon-search" 
-                                class="button-left-circle"
+                                class="margin-box"
                                 @click="search_1"
                                 circle></el-button>
                         </el-row>
@@ -46,6 +46,7 @@
                         @row-click="getDictName">
                         <el-table-column
                         label="名称"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <span style="margin-left: 10px">{{ scope.row.name }}</span>
@@ -53,6 +54,7 @@
                         </el-table-column>
                         <el-table-column
                         label="描述"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
@@ -68,11 +70,13 @@
                             <el-button 
                             type="primary" 
                             icon="el-icon-edit"
+                            class="margin-box"
                             @click="editDictionary(scope.row)"
                             size="small"></el-button>
                             <el-button 
                             type="danger" 
                             icon="el-icon-delete"
+                            class="margin-box"
                             @click="deleteDictionary(scope.row)"
                             size="small"
                             ></el-button>
@@ -92,9 +96,9 @@
                     </div>
                 </el-card>
             </el-col>
-            <el-col  :sm="24" :md="12" class="card-gutter">
+            <el-col  :sm="24" :md="12">
                 <el-card 
-                class="box-card">
+                class="box-card card-gutter-sm">
                     <div slot="header" class="clearfix">
                         <span class="title">字典详情</span>
                         <el-button 
@@ -125,6 +129,7 @@
                         style="width: 100%">
                         <el-table-column
                         label="所属字典"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <span style="margin-left: 10px">{{ beloneDictName }}</span>
@@ -132,6 +137,7 @@
                         </el-table-column>
                         <el-table-column
                         label="字典标签"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
@@ -141,6 +147,7 @@
                         </el-table-column>
                         <el-table-column
                         label="字典值"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
@@ -150,6 +157,7 @@
                         </el-table-column>
                         <el-table-column
                         label="排序"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">

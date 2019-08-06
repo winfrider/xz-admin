@@ -1,28 +1,11 @@
 	import axios from 'axios'
+	import router from '@/router/index'
+	import { Loading  } from 'element-ui'
 	import storage from '../storage/storage'
-	import { Loading, Message } from 'element-ui'
-	import 'element-ui/lib/theme-chalk/index.css';
+	import Message from '../message/message'
 
 	/**
-	 * @description 返回错误信息
-	 * @param {String} message 错误信息
-	 */
-	function showTips(message) {
-		Message({
-			showClose: true,
-			message: message,
-			type: 'error'
-		})
-	}
-	/**
-	 * @description 如果状态码为401，清除token
-	 * @param {Number} status 状态码 
-	 */
-	function isLogin(status) {
-		status === 401
-		&& storage.setMemoryPmt('token', '')
-	}
-	/**
+	 * @author xuanzai
 	 * @description 添加拦截器函数
 	 * @param {Object} obj axios实例对象 
 	 */
@@ -41,7 +24,7 @@
 				loading = Loading.service({ fullscreen: true })
 				return config
 			}, err => {
-				showTips('服务器出错，请联系客服进行处理')
+				Message.errorMsg('服务器出错，请联系客服进行处理')
 				loading.close()
 				return Promise.reject(err)
 			})
@@ -55,12 +38,22 @@
 			}, err => {
 				const regexp = new RegExp(/timeout/g)
 				typeof err.response === "object" 
-				? (showTips(
-					JSON.parse(err.response.request.response).message.replace(/{.*}/g, '')
-				), isLogin(err.response.status))
+				? (err.response.status === 401
+					? Message
+						.showMsgBox({ title: "系统提示", msg: "登录信息已过期，是否重新登录？", type: "warning" })
+						.then(() => {
+							storage.setMemoryPmt('token', '')
+							router.push({ path: "/login" })
+						})
+					: Message
+						.errorMsg(
+							JSON.parse(err.response.request.response).message 
+							? JSON.parse(err.response.request.response).message.replace(/{.*}/g, '')
+							: JSON.parse(err.response.request.response)
+				))
 				: (regexp.test(err)
-				? showTips('请求超时，请联系客服进行处理')
-				: showTips('服务器出错，请联系客服进行处理'))
+				? Message.errorMsg('请求超时，请联系客服进行处理')
+				: Message.errorMsg('服务器出错，请联系客服进行处理'))
 				loading.close()
 				return Promise.reject(err)
 			})
@@ -68,7 +61,7 @@
 
 	let loading
 	// 给所有的实例配置请求根路径
-	axios.defaults.baseURL = 'http://47.106.187.102:8008'	
+	axios.defaults.baseURL = 'https://aboot.missiono.cn'	
     // 配置请求时限
 	axios.defaults.timeout = 5000 
 	// 给所有的实例配置同一的返回数据格式
@@ -79,7 +72,10 @@
 			return data
 		}
 	}]	
-	// 发送数据格式为键值对
+	/**
+	 * @author xuanzai
+	 * @description 键值形式发送
+	 */
 	const http_normal = axios.create({
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded'
@@ -92,7 +88,10 @@
 			return str.replace(/&$/, '')
 		}],
 	})
-	// 发送数据格式为JSON格式
+	/**
+	 * @author xuanzai
+	 * @description json形式发送
+	 */
 	const http_json = axios.create({
 		headers: {
 			'Content-Type': 'application/json'
@@ -101,7 +100,10 @@
 			return JSON.stringify(data)
 		}],
 	})	
-	// 发送数据格式为文件类型
+	/**
+	 * @author xuanzai
+	 * @description 文件类型发送
+	 */
 	const http_file = axios.create({
 		headers: {
 			'Content-Type': 'multipart/form-data'

@@ -6,15 +6,15 @@
                     <div class="search">
                         <el-input 
                         v-model="searchVal" 
-                        placeholder="搜索内容"
-                        class="search-input"
+                        placeholder="请选择类型进行搜索"
+                        class="search-input margin-box"
                         @keyup.native="searchEnter"></el-input>
                         <el-select 
                         v-model="selectType" 
                         @change="search"
                         placeholder="类型"
                         clearable
-                        class="select-input">
+                        class="select-input margin-box">
                             <el-option
                             v-for="item in options"
                             :key="item.value"
@@ -24,11 +24,12 @@
                         </el-select>
                         <el-button 
                         icon="el-icon-search" 
-                        class="button-left-circle"
+                        class="margin-box"
                         @click="search"
                         circle></el-button>
                         <el-button 
                         type="primary"
+                        class="margin-box"
                         icon="el-icon-plus" 
                         @click="showAddStation"
                         circle></el-button>
@@ -38,6 +39,7 @@
                         style="width: 100%">
                         <el-table-column
                         label="名称"
+                        :show-overflow-tooltip="true"
                         >
                             <template slot-scope="scope">
                                 <span style="margin-left: 10px">{{ scope.row.name }}</span>
@@ -45,6 +47,7 @@
                         </el-table-column>
                         <el-table-column
                         label="所属部门"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
@@ -54,6 +57,7 @@
                         </el-table-column>
                         <el-table-column
                         label="排序"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
@@ -63,6 +67,7 @@
                         </el-table-column>
                         <el-table-column
                         label="状态"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
@@ -91,11 +96,13 @@
                             type="primary" 
                             icon="el-icon-edit"
                             @click="editStationItem(scope.row)"
+                            class="margin-box"
                             size="small"></el-button>
                             <el-button 
                             type="danger" 
                             icon="el-icon-delete"
                             @click="deleteStation(scope.row)"
+                            class="margin-box"
                             size="small"
                             ></el-button>
                         </template>

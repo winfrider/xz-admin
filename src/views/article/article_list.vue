@@ -6,10 +6,11 @@
                     <div class="search">
                         <el-input 
                         v-model="searchVal" 
-                        placeholder="搜索内容"
-                        class="search-input"></el-input>
+                        placeholder="搜索文章名称"
+                        class="search-input margin-box"></el-input>
                         <el-button 
                         icon="el-icon-search" 
+                        class="margin-box"
                         circle></el-button>
                     </div>
                     <el-table
@@ -26,6 +27,7 @@
                         </el-table-column>
                         <el-table-column
                         label="文章标题"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
@@ -35,6 +37,7 @@
                         </el-table-column>
                         <el-table-column
                         label="文章作者"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
@@ -44,6 +47,7 @@
                         </el-table-column>
                         <el-table-column
                         label="文章分类"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">

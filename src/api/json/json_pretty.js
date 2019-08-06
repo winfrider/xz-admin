@@ -1,4 +1,5 @@
 /**
+ * @author xuanzai
  * @description json美化(配合pre标签使用)
  * @param {JSON | Object} json json字符串或对象
  * @param {Number} tab 空格的个数
@@ -12,6 +13,4 @@ function jsonPretty(json, tab = 4) {
     }
 }
 
-export default {
-    jsonPretty
-}
+export default jsonPretty

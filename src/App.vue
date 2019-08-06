@@ -3,22 +3,10 @@
     <router-view/>
   </div>
 </template>
-<script>
-export default {
-  created() {
-    this.checkStatus()
-  },
-  methods: {
-    // 验证是否登录过
-    checkStatus() {
-           
-    },
-  }
-}
-</script>
 <style lang="scss">
   #app {
     position: relative;
     height: 100%;
+    overflow-y: auto;
   }
 </style>

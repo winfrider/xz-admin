@@ -7,15 +7,15 @@
                         <el-row :gutter="10">
                             <el-input 
                             v-model="searchVal" 
-                            placeholder="搜索内容"
-                            class="search-input"
+                            placeholder="请选择类型进行搜索"
+                            class="search-input margin-box"
                             @keyup.native="searchEnter"></el-input>
                                 <el-select 
                                 v-model="selectType" 
                                 @change="search"
                                 placeholder="类型"
                                 clearable
-                                class="select-input">
+                                class="select-input margin-box">
                                     <el-option
                                     v-for="item in options"
                                     :key="item.value"
@@ -25,15 +25,23 @@
                                 </el-select>
                                 <el-button 
                                 icon="el-icon-search" 
-                                class="button-left-circle"
+                                class="margin-box"
                                 @click="search"
                                 circle></el-button>
                                 <el-button 
                                 circle
                                 type="primary"
                                 icon="el-icon-plus" 
+                                class="margin-box"
                                 @click="showAddDepartment"
                                 ></el-button>
+                                <el-button 
+                                type="warning" 
+                                :icon="expand ? 'el-icon-open' : 'el-icon-turn-off'" 
+                                title="全部展开或收起"
+                                class="margin-box"
+                                @click="isExpandAll"
+                                circle></el-button>
                         </el-row>
                     </div>
                     <tree-table 
@@ -46,7 +54,10 @@
                                 <el-tag :type="scope.row.enabled ? '' : 'info'">{{ scope.row.enabled ? "正常" : "停用" }}</el-tag>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="createTime" label="创建日期">
+                        <el-table-column 
+                        :show-overflow-tooltip="true"
+                        prop="createTime" 
+                        label="创建日期">
                             <template slot-scope="scope">
                             <span>{{ scope.row.createTime }}</span>
                             </template>
@@ -115,6 +126,11 @@ export default {
         this.getDictsList('dept_status')
     },
     methods: {
+        // 是否展开全部
+        isExpandAll() {
+            this.expand = !this.expand
+            this.getDepartmentList()
+        },
         // 删除岗位
         deleteDepartment(item) {
             this

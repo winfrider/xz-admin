@@ -7,19 +7,27 @@
                         <el-row :gutter="10">
                             <el-input 
                             v-model="searchVal" 
-                            placeholder="搜索内容"
-                            class="search-input"
+                            placeholder="搜索权限名称"
+                            class="search-input margin-box"
                             @keyup.native="searchEnter"></el-input>
                                 <el-button 
                                 icon="el-icon-search" 
-                                class="button-left-circle"
+                                class="margin-box"
                                 @click="search" 
                                 circle></el-button>
                                 <el-button 
                                 circle
                                 type="primary"
-                                icon="el-icon-plus" 
+                                icon="el-icon-plus"
+                                class="margin-box" 
                                 @click="showAddAuthority()"></el-button>
+                                <el-button 
+                                type="warning" 
+                                :icon="expand ? 'el-icon-open' : 'el-icon-turn-off'" 
+                                title="全部展开或收起"
+                                class="margin-box"
+                                @click="isExpandAll"
+                                circle></el-button>
                         </el-row>
                     </div>
                     <tree-table 
@@ -27,7 +35,10 @@
                     :expand-all="expand" 
                     :columns="columns" 
                     size="small">
-                        <el-table-column prop="alias" label="别名">
+                        <el-table-column 
+                        prop="alias" 
+                        label="别名"
+                        :show-overflow-tooltip="true">
                             <template slot-scope="scope">
                                 <span>{{scope.row.alias}}</span>
                             </template>
@@ -93,6 +104,11 @@ export default {
         this.getAuthorityList()
     },
     methods: {
+        // 是否展开全部
+        isExpandAll() {
+            this.expand = !this.expand
+            this.getAuthorityList()
+        },
         // 删除权限
         deleteAuthorityItem(item) {
             this

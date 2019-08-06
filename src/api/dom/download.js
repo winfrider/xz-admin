@@ -1,4 +1,5 @@
 /**
+ * @author xuanzai
  * @description 下载文件
  * @param {String} url 下载路径
  */
@@ -10,6 +11,4 @@ function download(url) {
 	ele.dispatchEvent(event)
 }
 
-export default {
-    download
-}
+export default download

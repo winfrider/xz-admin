@@ -1,23 +1,20 @@
 <template>
     <div class="user-manage">
         <el-row :gutter="20">
-            <el-col :xs="8" :sm="8" :md="6">
+            <el-col :xs="24" :sm="8" :md="6">
                 <el-card class="box-card">
                     <div class="search">
                         <el-row>
-                            <el-col :span="19">
-                                <el-input 
+                            <el-input 
                                 v-model="searchVal_1" 
-                                placeholder="搜索内容"
+                                placeholder="搜索部门名称"
+                                class="search-input margin-box"
                                 @keyup.native="searchEnter_1"></el-input>
-                            </el-col>
-                            <el-col :span="3">
-                                <el-button 
+                            <el-button 
                                 icon="el-icon-search" 
-                                class="button-left-circle"
+                                class="margin-box"
                                 @click="search_1"
                                 circle></el-button>
-                            </el-col>
                         </el-row>
                     </div>
                     <div class="tree-box">
@@ -29,16 +26,15 @@
                     </div>
                 </el-card>
             </el-col>
-            <el-col :xs="16" :sm="16" :md="18">
-                <el-card class="box-card">
+            <el-col :xs="24" :sm="16" :md="18">
+                <el-card class="box-card card-gutter-xs">
                     <div class="search">
                         <el-row :gutter="10">
-                            <el-col :span="8">
-                                <el-input
-                                v-model="searchVal_2" 
-                                placeholder="搜索内容"
-                                @keyup.native="searchEnter_2"></el-input>
-                            </el-col>
+                            <el-input
+                            v-model="searchVal_2" 
+                            placeholder="请选择类型进行搜索"
+                            class="search-input margin-box"
+                            @keyup.native="searchEnter_2"/>
                             <el-select 
                                 v-model="selectType" 
                                 clearable
@@ -54,9 +50,10 @@
                              <el-select 
                              v-model="selectStatus" 
                              clearable
-                             placeholder="类型"
+                             placeholder="状态"
                              @change="getStatus"
-                             class="select-input">
+                             class="select-input margin-box"
+                             >
                                     <el-option
                                     v-for="item in options_2"
                                     :key="item.value"
@@ -66,11 +63,12 @@
                             </el-select>
                             <el-button 
                                 icon="el-icon-search" 
-                                class="button-left-circle"
+                                class="margin-box"
                                 circle></el-button>
                             <el-button 
                                 type="primary"
                                 icon="el-icon-plus" 
+                                class="margin-box"
                                 @click="showAddUser"
                                 circle
                                 ></el-button>
@@ -81,6 +79,7 @@
                         style="width: 100%;">
                         <el-table-column
                         label="用户名"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <span style="margin-left: 10px">{{ scope.row.username }}</span>
@@ -107,7 +106,8 @@
                         </template>
                         </el-table-column>
                         <el-table-column
-                        label="部门/岗位"
+                        label="部门"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
@@ -116,12 +116,23 @@
                         </template>
                         </el-table-column>
                         <el-table-column
+                        label="岗位"
+                        :show-overflow-tooltip="true"
+                        >
+                        <template slot-scope="scope">
+                            <div slot="reference" class="name-wrapper">
+                                {{scope.row.job.name}}
+                            </div>
+                        </template>
+                        </el-table-column>
+                        <el-table-column
                         label="状态"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
                                 <el-tag :type="scope.row.enabled ? '' : 'info'">
-                                    {{ scope.row.enabled ? "正常" : "禁用"}}
+                                    {{ scope.row.enabled ? "激活" : "锁定"}}
                                 </el-tag>
                             </div>
                         </template>
@@ -244,14 +255,22 @@ export default {
         },
         // 显示添加菜单窗口
         showAddUser() {
+            const form = this.$refs.form
             this.isAdd = true
-            this.$refs.form.dialog = true
-            this.$refs.form.resetForm()
+            form.dialog = true
+            form.getRoles()
+            form.getDepts()
+            form.getRoleLevel()
+            form.resetForm()
         },
         // 显示编辑菜单窗口
         showEditUser() {
+            const form = this.$refs.form
             this.isAdd = false
-            this.$refs.form.dialog = true
+            form.dialog = true
+            form.getRoles()
+            form.getDepts()
+            form.getRoleLevel()
         },
         // 编辑菜单项
         editUserItem(item) {
@@ -262,11 +281,11 @@ export default {
             userItem.enabled = item.enabled.toString()
             userItem.phone = item.phone
             userItem.email = item.email
-            userItem.roles = item.roles
             component.userId = item.id
             component.jobId = item.job.id
-            component.deptId = item.job.dept.id
             component.roleIds = item.roles.map(val => val.id)
+            component.deptId = item.dept.id
+            component.getJobs(item.dept.id, item.job.id)
             this.showEditUser()
         },
         // 点击搜索
@@ -329,16 +348,20 @@ export default {
                 const data = result.data
                 this.initialPage(data.totalElements)
                 this.initialUserList(data.content)
+            }).catch(e => {
+                this.$setMemoryPmt('token', '')
+                this.$warnMsg("修改了当前账户，请重新登录")
+                this.$router.push({ path: "/login" })
             })
         },
-        // 初始化错误日志列表
+        // 初始化部门列表
         initialDepartmentList(list) {
             this.departmentList.splice(0, this.departmentList.length)
             list.forEach(value => {
                 this.departmentList.push(value)
             })
         },
-        // 获取错误日志信息
+        // 获取部门信息
         getDepartmentList() {
             this.$http_json({
                 url: `/api/dept/get${this.searchVal_1 ? `?name=${this.searchVal_1}` : ""}`,

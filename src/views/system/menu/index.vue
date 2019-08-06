@@ -7,20 +7,28 @@
                         <el-row :gutter="10">
                             <el-input 
                             v-model="searchVal" 
-                            placeholder="搜索内容"
-                            class="search-input"
+                            placeholder="搜索菜单名称"
+                            class="search-input margin-box"
                             @keyup.native="searchEnter"></el-input>
                                 <el-button 
                                 icon="el-icon-search"
-                                class="button-left-circle" 
+                                class="margin-box" 
                                 @click="search"
                                 circle></el-button>
                                 <el-button 
                                 type="primary"
                                 icon="el-icon-plus" 
+                                class="margin-box"
                                 @click="showAddMenu()"
                                 circle
                                 ></el-button>
+                                <el-button 
+                                type="warning" 
+                                :icon="expand ? 'el-icon-open' : 'el-icon-turn-off'" 
+                                title="全部展开或收起"
+                                class="margin-box"
+                                @click="isExpandAll"
+                                circle></el-button>
                         </el-row>
                     </div>
                     <tree-table 
@@ -43,6 +51,12 @@
                         <el-table-column prop="iframe" label="内部菜单">
                             <template slot-scope="scope">
                                 <span v-if="!scope.row.iframe">是</span>
+                                <span v-else>否</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="enabled" label="是否显示">
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.enabled">是</span>
                                 <span v-else>否</span>
                             </template>
                         </el-table-column>
@@ -90,7 +104,6 @@ export default {
     data() {
         return {
             expand: true,
-            delLoading: false,
             searchVal: "",
             isAdd: true,
             menuList: [],
@@ -107,6 +120,11 @@ export default {
         this.getMenuList()
     },
     methods: {
+        // 是否展开全部
+        isExpandAll() {
+            this.expand = !this.expand
+            this.getMenuList()
+        },
         // 删除菜单
         deleteMenuItem(item) {
             this
@@ -142,6 +160,7 @@ export default {
             menuItem.component = item.component
             menuItem.iframe = item.iframe.toString()
             menuItem.roles = item.roles
+            menuItem.enabled = item.enabled.toString()
             menuItem.parentId = item.parentId
             menuItem.icon = item.icon
             this.showEditMenu()
