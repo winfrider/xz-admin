@@ -6,7 +6,7 @@
                     <div class="search">
                         <el-input 
                         v-model="searchVal" 
-                        placeholder="请选择类型进行搜索"
+                        placeholder="搜索岗位名称"
                         class="search-input margin-box"
                         @keyup.native="searchEnter"></el-input>
                         <el-select 
@@ -36,6 +36,7 @@
                     </div>
                     <el-table
                         :data="stationList"
+                        :highlight-current-row="true"
                         style="width: 100%">
                         <el-table-column
                         label="名称"
@@ -67,11 +68,12 @@
                         </el-table-column>
                         <el-table-column
                         label="状态"
+                        align="center"
                         :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
-                                <el-tag :type="scope.row.enabled ? '' : 'info'">
+                                <el-tag :type="scope.row.enabled ? '' : 'info'" size="small">
                                     {{ scope.row.enabled ? "正常" : "禁用"}}
                                 </el-tag>
                             </div>
@@ -90,7 +92,8 @@
                         <el-table-column 
                         label="操作"
                         fixed="right"
-                        width="150">
+                        width="150"
+                        align="center">
                         <template slot-scope="scope">
                             <el-button 
                             type="primary" 
@@ -195,7 +198,7 @@ export default {
             stationForm.name = item.name
             stationForm.sort = item.sort
             stationForm.enabled = item.enabled.toString()
-            this.$refs.form.deptId = item.dept.id
+            stationForm.dept.id = item.dept.id
             this.showEditStation()
         },
         // 点击搜索
@@ -223,7 +226,7 @@ export default {
         },
         // 初始化错误日志列表
         initialStationList(list) {
-            this.stationList.splice(0, this.stationList.length)
+            this.stationList.splice(0)
             list.forEach(value => {
                 this.stationList.push(value)
             })

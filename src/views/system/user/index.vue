@@ -76,6 +76,7 @@
                     </div>
                     <el-table
                         :data="userList"
+                        :highlight-current-row="true"
                         style="width: 100%;">
                         <el-table-column
                         label="用户名"
@@ -127,6 +128,7 @@
                         </el-table-column>
                         <el-table-column
                         label="状态"
+                        align="center"
                         :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
@@ -150,7 +152,8 @@
                         <el-table-column 
                         label="操作"
                         width="150"
-                        fixed="right">
+                        fixed="right"
+                        align="center">
                         <template slot-scope="scope">
                             <el-button 
                             type="primary" 
@@ -253,7 +256,7 @@ export default {
                     })
                 })
         },
-        // 显示添加菜单窗口
+        // 显示添加用户窗口
         showAddUser() {
             const form = this.$refs.form
             this.isAdd = true
@@ -263,7 +266,7 @@ export default {
             form.getRoleLevel()
             form.resetForm()
         },
-        // 显示编辑菜单窗口
+        // 显示编辑用户窗口
         showEditUser() {
             const form = this.$refs.form
             this.isAdd = false
@@ -356,7 +359,7 @@ export default {
         },
         // 初始化部门列表
         initialDepartmentList(list) {
-            this.departmentList.splice(0, this.departmentList.length)
+            this.departmentList.splice(0)
             list.forEach(value => {
                 this.departmentList.push(value)
             })

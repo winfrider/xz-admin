@@ -29,9 +29,11 @@
                     </div>
                     <el-table
                         :data="operationLogList"
+                        :highlight-current-row="true"
                         style="width: 100%">
                         <el-table-column
                         label="用户名"
+                        :show-overflow-tooltip="true"
                         >
                             <template slot-scope="scope">
                                 <span style="margin-left: 10px">{{ scope.row.username }}</span>
@@ -39,6 +41,7 @@
                         </el-table-column>
                         <el-table-column
                         label="IP"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference">
@@ -48,6 +51,7 @@
                         </el-table-column>
                         <el-table-column
                         label="描述"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference">
@@ -57,6 +61,7 @@
                         </el-table-column>
                         <el-table-column
                         label="方法名称"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <el-tooltip 
@@ -73,6 +78,7 @@
                         </el-table-column>
                         <el-table-column
                         label="参数"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <el-tooltip 
@@ -89,6 +95,7 @@
                         </el-table-column>
                         <el-table-column
                         label="请求耗时"
+                        align="center"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
@@ -182,7 +189,7 @@ export default {
         },
         // 初始化操作日志列表
         initialOpertionLogList(list) {
-            this.operationLogList.splice(0, this.operationLogList.length)
+            this.operationLogList.splice(0)
             list.forEach(value => {
                 this.operationLogList.push(value)
             })

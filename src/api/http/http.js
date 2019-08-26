@@ -36,7 +36,7 @@
 				loading.close()
 				return response;
 			}, err => {
-				const regexp = new RegExp(/timeout/g)
+        const regexp = new RegExp(/timeout/g)
 				typeof err.response === "object" 
 				? (err.response.status === 401
 					? Message
@@ -45,7 +45,9 @@
 							storage.setMemoryPmt('token', '')
 							router.push({ path: "/login" })
 						})
-					: Message
+          : err.response.status === 403
+          ? router.push({ path: "/401" })
+          : Message
 						.errorMsg(
 							JSON.parse(err.response.request.response).message 
 							? JSON.parse(err.response.request.response).message.replace(/{.*}/g, '')
@@ -61,7 +63,7 @@
 
 	let loading
 	// 给所有的实例配置请求根路径
-	axios.defaults.baseURL = 'https://aboot.missiono.cn'	
+	axios.defaults.baseURL = baseUrl
     // 配置请求时限
 	axios.defaults.timeout = 5000 
 	// 给所有的实例配置同一的返回数据格式

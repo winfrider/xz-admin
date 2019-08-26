@@ -31,6 +31,7 @@
                     <el-table 
                     ref="table" 
                     :data="pictureList" 
+                    :highlight-current-row="true"
                     size="small" 
                     style="width: 100%;"
                     @selection-change="selectItem">
@@ -43,9 +44,9 @@
                         prop="username" 
                         label="上传者"
                         :show-overflow-tooltip="true"/>
-                        <el-table-column ref="table" :show-overflow-tooltip="true" prop="url" label="缩略图">
+                        <el-table-column ref="table" :show-overflow-tooltip="true" prop="url" label="缩略图" align="center">
                             <template slot-scope="scope">
-                            <a :href="scope.row.url" style="color: #42b983" target="_blank"><img :src="scope.row.url" alt="点击打开" class="el-avatar"></a>
+                              <a :href="scope.row.url" style="color: #42b983" target="_blank"><img :src="scope.row.url" alt="点击打开" class="el-avatar xz-image"></a>
                             </template>
                         </el-table-column>
                         <el-table-column 
@@ -54,9 +55,15 @@
                         :show-overflow-tooltip="true"/>
                         <el-table-column 
                         label="操作"
-                        width="150"
-                        fixed="right">
+                        fixed="right"
+                        align="center">
                         <template slot-scope="scope">
+                            <el-button 
+                            type="success" 
+                            icon="el-icon-share"
+                            @click="copy(scope.row)"
+                            size="small"
+                            ></el-button>
                             <el-button 
                             type="danger" 
                             icon="el-icon-delete"
@@ -110,6 +117,14 @@ export default {
         this.getPictureList()
     },
     methods: {
+        // 复制图片地址
+        copy(item) {
+          this
+            .$copyText(item.url)
+            .then(() => {
+              this.$successMsg("复制成功")
+            })
+        },
         // 删除选中的图片
         deleteSelect() {
             this
@@ -176,7 +191,7 @@ export default {
         },
         // 初始化错误日志列表
         initialPictureList(list) {
-            this.pictureList.splice(0, this.pictureList.length)
+            this.pictureList.splice(0)
             list.forEach(value => {
                 this.pictureList.push(value)
             })

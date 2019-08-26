@@ -43,6 +43,7 @@
                     <el-table
                         :data="dictionaryList"
                         style="width: 100%;"
+                        :highlight-current-row="true"
                         @row-click="getDictName">
                         <el-table-column
                         label="名称"
@@ -65,7 +66,8 @@
                         <el-table-column 
                         label="操作"
                         width="150"
-                        fixed="right">
+                        fixed="right"
+                        align="center">
                         <template slot-scope="scope">
                             <el-button 
                             type="primary" 
@@ -126,6 +128,7 @@
                     </div>
                     <el-table
                         :data="detailList"
+                        :highlight-current-row="true"
                         style="width: 100%">
                         <el-table-column
                         label="所属字典"
@@ -169,6 +172,7 @@
                         label="操作"
                         width="150"
                         fixed="right"
+                        align="center"
                         >
                         <template slot-scope="scope">
                             <el-button 
@@ -371,7 +375,7 @@ export default {
         },
         // 初始化字典列表
         initialDictionaryList(list) {
-            this.dictionaryList.splice(0, this.dictionaryList.length)
+            this.dictionaryList.splice(0)
             list.forEach(value => {
                 this.dictionaryList.push(value)
             })
@@ -389,7 +393,7 @@ export default {
         },
         // 初始化字典详情列表
         initialDetailList(list) {
-            this.detailList.splice(0, this.detailList.length)
+            this.detailList.splice(0)
             list.forEach(value => {
                 this.detailList.push(value)
             })

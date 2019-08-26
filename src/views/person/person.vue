@@ -64,6 +64,7 @@
                     </div>
                     <el-table
                         :data="operationLogList"
+                        :highlight-current-row="true"
                         style="width: 100%">
                         <el-table-column
                         label="行为"
@@ -211,7 +212,7 @@ export default {
         },
         // 初始化操作日志列表
         initialOpertionLogList(list) {
-            this.operationLogList.splice(0, this.operationLogList.length)
+            this.operationLogList.splice(0)
             list.forEach(value => {
                 this.operationLogList.push(value)
             })

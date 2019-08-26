@@ -11,23 +11,23 @@ import ElementUI from 'element-ui'
 import { Drawer } from 'iview'
 // 引入markdown编辑器
 import mavonEditor from 'mavon-editor'
-// 引入jquery
-import Jquery from 'jquery'
 // 引入导航栏折叠
 import Fragment from 'vue-fragment'
 // 引入icon组件
 import '@/icons'
 // 引入全局样式
-import '@/global/style.css'
+import '@/global/css/style.css'
 import '@/api/iconfont/iconfont'
-import 'element-ui/lib/theme-chalk/index.css';
-import 'iview/dist/styles/iview.css';
+import 'element-ui/lib/theme-chalk/index.css'
+import 'iview/dist/styles/iview.css'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import 'mavon-editor/dist/css/index.css'
 // 引入树状选择器
 import Treeselect from '@riophae/vue-treeselect'
 // 引入时间格式化函数
 import Date from '@/api/other/form_date'
+// 引入获取URL参数函数
+import UrlQuery from '@/api/other/url_query'
 // 引入设置样式函数
 import SetStyle from '@/api/dom/set_style'
 // 引入设置元素类模块
@@ -48,8 +48,8 @@ import ReadImg from '@/api/file/get_file_image'
 import PreviewFile from '@/api/file/preview_file'
 // 引入json美化模块
 import JsonPretty from '@/api/json/json_pretty'
-// 引入jquery模块
-Vue.prototype.$$ = Jquery 
+// 引入图片加载动画模块
+import ImageLoad from '@/api/other/image_load'
 /**
  * @author xuanzai
  * @description 连接数据库
@@ -122,6 +122,12 @@ Vue.prototype.$showMsgBox = Message.showMsgBox
  */
 Vue.prototype.$formDate = Date.formDate
 /**
+  * @author xuanzai
+  * @description 获取url后的参数
+  * @returns {Object}
+  */
+Vue.prototype.$urlQuery = UrlQuery
+/**
  * @author xuanzai
  * @description 日期差(date_2 - date_1)
  * @param {String | Date} date_1
@@ -161,7 +167,7 @@ Vue.prototype.$getClassName = SetClass.getClassName
  * @author xuanzai
  * @description 设置存储值
  * @param {String} key 存储键
- * @param {String | Object | Number | Boolean} value 存储值
+ * @param {Any} value 存储值
  */
 Vue.prototype.$setMemorySes = Memory.setMemorySes
 Vue.prototype.$setMemoryPmt = Memory.setMemoryPmt
@@ -169,7 +175,7 @@ Vue.prototype.$setMemoryPmt = Memory.setMemoryPmt
  * @author xuanzai
  * @description 获取存储值
  * @param {String} key 存储值
- * @return {String | Object | Number | Boolean} 返回值
+ * @return {Any} 返回值
  */
 Vue.prototype.$getMemorySes = Memory.getMemorySes
 Vue.prototype.$getMemoryPmt = Memory.getMemoryPmt
@@ -219,6 +225,12 @@ Vue.prototype.$insertAfter = InsertAfter
  * @returns {JSON} 返回美化好的JSON 
  */
 Vue.prototype.$jsonPretty = JsonPretty
+/**
+ * @author xuanzai
+ * @description 图片加载模块
+ * @param {String} url
+ */
+Vue.prototype.$imageLoad = ImageLoad
 // 加入element-ui组件
 Vue.use(ElementUI)
 // 引入markdown编辑器组件

@@ -37,6 +37,7 @@
                     <el-table
                         :data="roleList"
                         style="width: 100%;"
+                        :highlight-current-row="true"
                         @row-click="getRoleItem">
                         <el-table-column
                         label="名称"
@@ -58,6 +59,7 @@
                         </el-table-column>
                         <el-table-column
                         label="角色级别"
+                        align="center"
                         :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
@@ -90,7 +92,8 @@
                         <el-table-column 
                         label="操作"
                         width="150"
-                        fixed="right">
+                        fixed="right"
+                        align="center">
                         <template slot-scope="scope">
                             <el-button 
                             type="primary" 
@@ -316,7 +319,7 @@ export default {
         },
         // 初始化角色列表
         initialRoleList(list) {
-            this.roleList.splice(0, this.roleList.length)
+            this.roleList.splice(0)
             list.forEach(value => {
                 this.roleList.push(value)
             })

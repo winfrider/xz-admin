@@ -51,6 +51,7 @@
                     </div>
                     <el-table
                         :data="authorityLogList"
+                        :highlight-current-row="true"
                         style="width: 100%">
                         <el-table-column
                         label="操作者"
@@ -61,6 +62,7 @@
                         </el-table-column>
                         <el-table-column
                         label="IP"
+                        :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
                             <div slot="reference">
@@ -80,6 +82,7 @@
                         </el-table-column>
                         <el-table-column
                         label="是否恢复"
+                        align="center"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
@@ -93,6 +96,7 @@
                         </el-table-column>
                         <el-table-column
                         label="操作类型"
+                        align="center"
                         :show-overflow-tooltip="true"
                         >
                         <template slot-scope="scope">
@@ -113,6 +117,7 @@
                         </el-table-column>
                         <el-table-column
                         label="操作值"
+                        align="center"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
@@ -123,7 +128,8 @@
                         <el-table-column 
                         label="操作"
                         fixed="right"
-                        width="150">
+                        width="150"
+                        align="center">
                         <template slot-scope="scope">
                             <el-button 
                             type="success" 
@@ -161,11 +167,11 @@
             <el-row :gutter=20>
                 <el-col :sm="24" :md="12">
                     <h3>操作前的值</h3>
-                    <pre>{{authorityOldDetail}}</pre>
+                    <pre class="pre">{{authorityOldDetail}}</pre>
                 </el-col>
                 <el-col :sm="24" :md="12">
                     <h3>操作后的值</h3>
-                    <pre>{{authorityNewDetail}}</pre>
+                    <pre class="pre">{{authorityNewDetail}}</pre>
                 </el-col>
             </el-row>
         </el-dialog>
@@ -313,7 +319,7 @@ export default {
         },
         // 初始化权限日志列表
         initialAuthorityLogList(list) {
-            this.authorityLogList.splice(0, this.authorityLogList.length)
+            this.authorityLogList.splice(0)
             list.forEach(value => {
                 value.type = this.initialOperationType(value.type)
                 this.authorityLogList.push(value)
@@ -349,5 +355,8 @@ export default {
     }
     h3 {
         line-height: 3rem;
+    }
+    .pre {
+      white-space: pre-wrap;
     }
 </style>

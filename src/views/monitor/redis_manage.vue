@@ -24,6 +24,7 @@ import { MessageBox } from 'mint-ui';
                     </div>
                     <el-table
                         :data="redisList"
+                        :highlight-current-row="true"
                         style="width: 100%">
                         <el-table-column
                         :show-overflow-tooltip="true"
@@ -38,6 +39,7 @@ import { MessageBox } from 'mint-ui';
                         <el-table-column
                         label="VALUE"
                         width="100"
+                        align="center"
                         >
                         <template slot-scope="scope">
                             <div slot="reference" class="name-wrapper">
@@ -49,6 +51,7 @@ import { MessageBox } from 'mint-ui';
                         label="操作"
                         width="100"
                         fixed="right"
+                        align="center"
                         >
                         <template slot-scope="scope">
                             <el-button 
@@ -164,7 +167,7 @@ export default {
         },
         // 初始化错误日志列表
         initialRedisList(list) {
-            this.redisList.splice(0, this.redisList.length)
+            this.redisList.splice(0)
             list.forEach(value => {
                 this.redisList.push(value)
             })

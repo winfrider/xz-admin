@@ -4,18 +4,18 @@
             <el-col :xs="12" :sm="12" :md="6" :xl="6">
                 <el-card class="box-card">
                     <el-row>
-                        <el-col :span="12">
+                        <el-col :xs="24" :sm="12" style="text-align: center">
                             <div class="iconfont-box">
                                 <span class="el-icon-user-solid"></span>
                             </div>
                         </el-col>
-                        <el-col :span="12">
+                        <el-col :xs="24" :sm="12">
                             <div class="content-box">
                                 <div class="header">
                                     流量
                                 </div>
                                 <div class="number">
-                                    <vns :start="0" :end="peopleNum" :times="times" :speed="speed"/>
+                                    <countTo :startVal="0" :endVal="peopleNum" :duration="duration"/>
                                 </div>
                             </div>
                         </el-col>
@@ -25,18 +25,18 @@
             <el-col :xs="12" :sm="12" :md="6" :xl="6">
                 <el-card class="box-card">
                     <el-row>
-                        <el-col :span="12">
+                        <el-col :xs="24" :sm="12" style="text-align: center">
                             <div class="iconfont-box">
                                 <span class="el-icon-document"></span>
                             </div>
                         </el-col>
-                        <el-col :span="12">
+                        <el-col :xs="24" :sm="12">
                             <div class="content-box">
                                 <div class="header">
                                     留言
                                 </div>
                                 <div class="number">
-                                    <vns :start="0" :end="messageNum" :times="times" :speed="speed"/>
+                                  <countTo :startVal="0" :endVal="messageNum" :duration="duration"/>
                                 </div>
                             </div>
                         </el-col>
@@ -46,18 +46,18 @@
             <el-col :xs="12" :sm="12" :md="6" :xl="6">
                 <el-card class="box-card">
                     <el-row>
-                        <el-col :span="12">
+                        <el-col :xs="24" :sm="12" style="text-align: center">
                             <div class="iconfont-box">
                                 <span class="el-icon-coin"></span>
                             </div>
                         </el-col>
-                        <el-col :span="12">
+                        <el-col :xs="24" :sm="12">
                             <div class="content-box">
                                 <div class="header">
                                 销售额
                                 </div>
                                 <div class="number">
-                                    <vns :start="0" :end="money" :times="times" :speed="speed"/>
+                                  <countTo :startVal="0" :endVal="money" :duration="duration"/>
                                 </div>
                             </div>
                         </el-col>
@@ -67,18 +67,18 @@
             <el-col :xs="12" :sm="12" :md="6" :xl="6">
                 <el-card class="box-card">
                     <el-row>
-                        <el-col :span="12">
+                        <el-col :xs="24" :sm="12" style="text-align: center">
                             <div class="iconfont-box">
                                 <span class="el-icon-shopping-cart-1"></span>
                             </div>
                         </el-col>
-                        <el-col :span="12">
+                        <el-col :xs="24" :sm="12">
                             <div class="content-box">
                                 <div class="header">
                                 销售量
                                 </div>
                                 <div class="number">
-                                    <vns :start="0" :end="sellNum" :times="times" :speed="speed"/>
+                                  <countTo :startVal="0" :endVal="sellNum" :duration="duration"/>
                                 </div>
                             </div>
                         </el-col>
@@ -115,14 +115,14 @@
 
 <script>
 // 引入v-chart
-import vns from 'vue-number-scroll'
+import countTo from 'vue-count-to'
 import VeLine from 'v-charts/lib/line.common'
 import VePie from 'v-charts/lib/pie.common'
 import VeRing from 'v-charts/lib/ring.common'
 import VeHistogram from 'v-charts/lib/histogram.common'
 import VeFunnel from 'v-charts/lib/funnel.common'
 export default {
-    components: { VeLine, VePie, VeRing, VeHistogram, VeFunnel, vns },
+    components: { VeLine, VePie, VeRing, VeHistogram, VeFunnel, countTo },
     data() {
         this.lineSettings = {
             stack: { '用户': ['访问用户', '下单用户'] },
@@ -145,7 +145,7 @@ export default {
             sellNum: 573,
             messageNum: 79,
             speed: 40,
-            times: 60,
+            duration: 4000,
             lineData: {
                 columns: ['日期', '访问用户', '下单用户', '下单率'],
                 rows: [
@@ -254,4 +254,11 @@ export default {
         color: #656565;
         font-size: 1.2rem;
     }
+    @media screen and (max-width: 768px) {
+          .content-box {
+            text-align: center;
+            top: 0;
+            padding-right: 0;
+          }
+      } 
 </style>

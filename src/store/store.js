@@ -5,6 +5,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    // 页面元素样式设置
+    setting: {
+      showLogo: true,
+      showTags: true,
+      showBreadcrumb: true,
+    },
     // 保存用户信息
     user: {
       avatar: "",
@@ -16,8 +22,6 @@ export default new Vuex.Store({
     },
     // 保存菜单项
     menuList: [],
-    // 保存菜单索引
-    menuIndex: "首页",
     // 保存标签页列表
     tagsList: [{
       meta: {
@@ -36,10 +40,6 @@ export default new Vuex.Store({
     setMenuList(state, obj) {
       state.menuList = obj
     },
-    // 设置菜单索引
-    setMenuIndex(state, index) {
-      state.menuIndex = index
-    },
     // 添加标签页
     addTags(state, tags) {
       state.tagsList.push(tags)
@@ -48,8 +48,5 @@ export default new Vuex.Store({
     removeTag(state) {
       state.tagsList.splice(1)
     }
-  },
-  actions: {
-
   }
 })

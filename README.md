@@ -1,3 +1,8 @@
+<h1 align="center">XZ-ADMIN</h1>
+
+<br/>
+<br/>
+
 # :smirk: 页面浏览 
 
 https://xzadmin.xuanzai.top
@@ -13,85 +18,27 @@ https://xzadmin.xuanzai.top
 
 运行：在项目目录下`npm run serve`
 
+查阅文档，[快速上手](http://xzadmin-docs.xuanzai.top)
+
 如有问题，请看[已知问题列表](#question)
-
-<br/>
-
-# :ok_hand: 页面开发进度
-
-已完成所有，日后再添加
-
-<br/>
-
-# :muscle: 已对接接口
-
-- 登录
-- 系统管理
-  - 字典管理
-  - 菜单管理
-  - 岗位管理
-  - 权限管理
-  - 用户管理
-  - 部门管理
-  - 权限管理
-- 日志管理
-  - 操作日志
-  - 异常日志 
-  - 权限日志
-- 系统监控
-  - 系统缓存
-- 系统工具
-  - 图片管理
-
-<br/>
-
-# :bulb: 已有功能
-
-+ 个性化登录界面
-+ 个性化后台管理界面
-+ 路由与标签页、菜单、面包屑关联（vue-router）
-
-<br/>
-
-# :earth_asia: 页面布局
-
-+ 弹性布局
-+ 响应式布局
-+ 响应式菜单
-+ 可滚动标签页
 
 <br/>
 
 
 # :sparkling_heart: 技术栈
-使用了`vue`、`element-ui`、`iview`作为主要技术栈
+使用了`vue`、`element-ui`作为主要技术栈
 
 <br/>
 
 # :electric_plug: 插件
 
-+ 富文本编辑器：`UEditor`
 + 图表：`VCharts`
-+ 数字滚动：`vue-number-scroll`
++ 数字滚动：`vue-count-to`
 + 树状选择器：`vue-treeselect`
 + 动态菜单折叠插件：`vue-fragment`
 + 进度条：`nprogress`
++ 富文本编辑器：`UEditor`
 + markdown编辑器：`mavonEditor`
-
-<br/>
-
-
-<h1 id="question">:page_with_curl: 已知问题</h1>
-
-<br/>
-
-> Module build failed (from ./node_modules/_svg-sprite-loader@4.1.6@svg-sprite-loader/lib/loader.js)
-
-原因：引入了`svg-loader`，对已经处理过的`svg`再次进行处理导致报错
-
-解决方案：类似这种问题，看看引入的全局`CSS`或自己写的`CSS`文件里有没有类似这样的语句：`url(xxxxx) format("truetype")) format("svg")`，如果有，则直接删除即可。
-
-+ `mavonEditor`中的`index.css`中含有该组件，如果要继续使用`mavonEditor`markdown编辑器，请在`node_modules --> mavon-editor --> dist --> index.css`删除如上代码。
 
 
 

@@ -110,16 +110,16 @@ function getRouter() {
 function addTags(tag) {
     const tagsList = store.state.tagsList
     // 如果是404页面，不添加标签页
-    if(tag.meta.title === "404") {
+    if(tag.meta.title === "404" || tag.meta.title === "401") {
         return
     }
-    // 如果已存在标签，将该标签改为活跃状态
+    // 如果已存在标签，不添加标签
     for(let i = 0, len = tagsList.length; i < len; i ++) {
         if(tagsList[i].meta.title === tag.meta.title || !tag.name) {
             return
         }
     }
-    store.commit('addTags', tag)
+    store.commit('addTags', tag) 
 }
 
 // 清除缓存
@@ -143,16 +143,10 @@ router.beforeEach((to, from, next) => {
         if(to.path === "/") {
             next({ path: '/login' })
         }else {
-            // 如果用户信息存在，拉取动态路由与菜单
-            if(store.state.user.phone) {
-                getRouter()
-            }
             // 如果菜单信息不存在（直接访问），重新拉取动态路由与菜单
             if(store.state.menuList.length == 0) {
                 getRouter()
             }
-            // 改变菜单索引
-            store.commit('setMenuIndex', to.name)
             addTags(to)
             next()
         }
