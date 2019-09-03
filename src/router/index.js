@@ -6,11 +6,11 @@ import Storage from '@/api/storage/storage'
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 // 后台管理页面模板
-import Layout from '@/views/home.vue'
+import Layout from '@/views/Layout/index.vue'
 // 默认路由页，用来存放子路由的纯路由页面
 import DefaultPage from '@/Layout/index.vue'
 // 默认首页加载
-import Welcome from '@/views/welcome'
+import Welcome from '@/views/welcome/welcome.vue'
 
 // 默认后台管理模板
 const layout = {
@@ -89,7 +89,7 @@ function generateRouter(list, pre, now) {
 
 // 获取菜单与路由
 function getRouter() {
-    if(store.state.menuList.length == 0) {
+    if(store.state.menu.menuList.length == 0) {
         Http.http_json({
             url: "/api/menu/build",
             method: "get"
@@ -108,7 +108,7 @@ function getRouter() {
 
 // 添加标签页
 function addTags(tag) {
-    const tagsList = store.state.tagsList
+    const tagsList = store.state.tags.tagsList
     // 如果是404页面，不添加标签页
     if(tag.meta.title === "404" || tag.meta.title === "401") {
         return
@@ -144,7 +144,7 @@ router.beforeEach((to, from, next) => {
             next({ path: '/login' })
         }else {
             // 如果菜单信息不存在（直接访问），重新拉取动态路由与菜单
-            if(store.state.menuList.length == 0) {
+            if(store.state.menu.menuList.length == 0) {
                 getRouter()
             }
             addTags(to)

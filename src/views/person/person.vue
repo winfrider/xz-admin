@@ -130,13 +130,13 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import editPassword from './edit_password'
 import editEmail from './edit_email'
 export default {
     components: { editPassword, editEmail },
     data() {
         return {
-            user: this.$store.state.user,
             activeName: "first",
             searchVal: "",
             // 当前页数
@@ -147,6 +147,11 @@ export default {
             totalElements: 0,
             operationLogList: []
         }
+    },
+    computed: {
+      ...mapState({
+        user: state => state.user
+      })
     },
     created() {
         // 初始化页面数据
@@ -220,7 +225,7 @@ export default {
         // 获取操作日志信息
         getOpertionLogList() {
             this.$http_normal({
-                url: `/log/page?page=${this.nowPage - 1}&size=${this.nowSize}&sort=createTime,desc${this.searchVal ? `&description=${this.searchVal}` : ""}`,
+                url: encodeURI(`/log/page?page=${this.nowPage - 1}&size=${this.nowSize}&sort=createTime,desc${this.searchVal ? `&description=${this.searchVal}` : ""}`),
                 method: "get"
             }).then(result => {
                 const data = result.data

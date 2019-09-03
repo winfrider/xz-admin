@@ -53,6 +53,62 @@
 
 过滤器统一存放在`src/initial/filter.js`文件里，只需按照该文件里面代码格式在该文件里进行编写即可。
 
+示例：
+```js
+// 在原有基础上添加，变量名即为过滤器名称
+const demo = (val) => {
+	// todo
+}
+
+export default {
+	demo,
+	...
+}
+```
+
+<br/>
+
+## 注册指令
+
+过滤器统一存放在`src/initial/directives.js`文件里，只需按照该文件里面代码格式在该文件里进行编写即可。
+
+默认所有指令都以`inserted`、`componentUpdated`方式全局注册，即在组件挂载或组件及其子组件更新完毕的时候调用该指令。
+
+示例：
+```js
+// 在原有基础上添加，变量名即为指令名称
+const demo = (el, binding) => {
+	// todo
+}
+
+export default {
+	demo,
+	...
+}
+```
+
+如要使用其他方式进行指令绑定，请在`main.js`文件进行修改。
+
+如下为默认自动全局注册自定义指令代码。
+
+```js
+/**
+ * @author xuanzai
+ * @description 全局指令初始化。在如下路径文件下全局注册指令即可。
+ */
+import directives from '@/initial/directives'
+
+// 全局注册指令
+Object
+  .keys(directives)
+  .forEach(key => {
+    Vue.directive(key, {
+      inserted: directives[key],
+      componentUpdated: directives[key]
+    })
+  })
+```
+
 <br/>
 
 ## 修改请求地址
