@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from '@/App.vue'
-import router from '@/router/index'
-import store from '@/store/store'
+import router from '@/router'
+import store from '@/store'
 /**
  * @author xuanzai
  * @description api模块初始化。在如下路径文件下引入模块即可。
@@ -34,6 +34,20 @@ Object
       inserted: directives[key],
       componentUpdated: directives[key]
     })
+  })
+
+/**
+ * @author xuanzai
+ * @description 全局注册组件。
+ */
+const req = require.context('@/components', true, /index\.vue$/)
+
+// 全局注册组件
+req
+  .keys()
+  .forEach(val => {
+    const component = req(val).default
+    Vue.component(component.name, component)
   })
 
 new Vue({

@@ -142,7 +142,7 @@
 </template>
 
 <script>
-import eForm from "./form";
+import eForm from "./components/form";
 export default {
   components: { eForm },
   data() {
@@ -232,7 +232,7 @@ export default {
       form.getDepts();
       form.getRoleLevel();
     },
-    // 编辑菜单项
+    // 编辑用户项
     editUserItem(item) {
       const userItem = this.$refs.form.userForm,
         component = this.$refs.form;

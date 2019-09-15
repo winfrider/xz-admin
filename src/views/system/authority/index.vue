@@ -80,10 +80,9 @@
 </template>
 
 <script>
-import treeTable from "@/components/tree_table/tree_table"
-import eForm from "./form.vue"
+import eForm from "./components/form"
 export default {
-    components: { treeTable, eForm },
+    components: { eForm },
     data() {
         return {
             expand: true,
@@ -152,14 +151,14 @@ export default {
             e.keyCode === 13
             && this.getAuthorityList()
         },
-        // 初始化菜单列表
+        // 初始化权限列表
         initialAuthorityList(list) {
             this.authorityList.splice(0)
             list.forEach(value => {
                 this.authorityList.push(value)
             })
         },
-        // 获取菜单列表
+        // 获取权限信息
         getAuthorityList() {
             this.$http_json({
                 url: `/api/permission/get?sort=createTime,desc${this.searchVal ? `&name=${this.searchVal}` : ""}`,

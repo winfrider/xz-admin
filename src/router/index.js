@@ -1,6 +1,6 @@
 import router from './router'
 import Http from '@/api/http/http'
-import store from '@/store/store'
+import store from '@/store'
 import Storage from '@/api/storage/storage'
 // 引入进度条插件
 import NProgress from 'nprogress';
@@ -10,7 +10,7 @@ import Layout from '@/views/Layout/index.vue'
 // 默认路由页，用来存放子路由的纯路由页面
 import DefaultPage from '@/Layout/index.vue'
 // 默认首页加载
-import Welcome from '@/views/welcome/welcome.vue'
+import Welcome from '@/views/welcome/index.vue'
 
 // 默认后台管理模板
 const layout = {
