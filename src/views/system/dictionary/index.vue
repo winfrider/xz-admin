@@ -161,7 +161,7 @@
         </el-card>
       </el-col>
     </el-row>
-    <Form-Add ref="formAdd" :isAdd="isAdd_1" @updateDictionaryList="getDictionaryList" />
+    <Form-Add ref="formAdd" :isAdd="isAdd_1"/>
     <Form-Edit ref="formEdit" :isAdd="isAdd_2" @updateDetailList="getDetailList" />
   </div>
 </template>
@@ -211,7 +211,6 @@ export default {
   created() {
     // 初始化字典列表
     this.getDictionaryList();
-    this.getDetailList();
   },
   methods: {
     // 添加字典

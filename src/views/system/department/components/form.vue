@@ -1,7 +1,7 @@
 <template>
   <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增部门' : '编辑部门'" width="500px">
     <el-form ref="departmentForm" :model="departmentForm" :rules="rules" size="small" label-width="80px">
-      <el-form-item label="名称" prop="name">
+      <el-form-item status-icon label="名称" prop="name">
         <el-input v-model="departmentForm.name" style="width: 370px;"/>
       </el-form-item>
       <el-form-item v-if="departmentForm.pid !== 0" label="状态" prop="enabled">
@@ -51,10 +51,6 @@ export default {
     this.getDepartmentList()
   },
   methods: {
-    // 更新部门列表
-    updateList() {
-      this.$emit("updateDepartmentList")
-    },
     // 隐藏弹窗
     hideBox() {
       this.dialog = false
@@ -86,10 +82,10 @@ export default {
         this.$successMsg('添加成功')
         this.hideBox()
         this.getDepartmentList()
-        this.updateList()
+        this.$parent.getDepartmentList()
       }) 
     },
-    // 删除部门
+    // 编辑部门
     editDepartment() {
       this.departmentForm.id = this.departmentId
       this.$http_json({
@@ -100,7 +96,7 @@ export default {
         this.$successMsg('编辑成功')
         this.hideBox()
         this.getDepartmentList()
-        this.updateList()
+        this.$parent.getDepartmentList()
       }) 
     },
     resetForm() {

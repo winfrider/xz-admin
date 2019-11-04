@@ -5,6 +5,7 @@
         width="450px"
         >
             <el-form 
+            status-icon
             :model="detailForm"
             ref="detailForm"
             :rules="detailFormRules"
@@ -88,10 +89,6 @@ export default {
         }
     },
     methods: {
-        // 更新父组件数据
-        updateList() {
-            this.$emit('updateDetailList')
-        },
         // 隐藏弹出框
         hideDetailBox() {
             this.isShowDetailBox = false
@@ -107,7 +104,7 @@ export default {
                 result.status === 200
                 && (this.$successMsg('添加成功'),
                 this.hideDetailBox(),
-                this.updateList())
+                this.$parent.getDetailList())
             })
         },
         editDictDetail() {
@@ -120,7 +117,7 @@ export default {
                 result.status === 200
                 && (this.$successMsg('编辑成功'),
                 this.hideDetailBox(),
-                this.updateList())
+                this.$parent.getDetailList())
             })
         },
         // 提交数据

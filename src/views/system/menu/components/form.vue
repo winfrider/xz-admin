@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="dialog" :title="isAdd ? '新增菜单' : '编辑菜单'" append-to-body width="600px">
-    <el-form ref="menuForm" :model="menuForm" :rules="rules" size="small" label-width="80px">
+    <el-form status-icon ref="menuForm" :model="menuForm" :rules="rules" size="small" label-width="80px">
       <el-form-item label="菜单图标">
         <el-popover
           placement="bottom-start"
@@ -97,10 +97,6 @@ export default {
         this.$refs.menuForm.resetFields()
       }catch(e) {}
     },
-    // 更新菜单列表
-    updateList() {
-      this.$emit('updateMenu')
-    },
     // 隐藏弹出框
     hideBox() {
       this.dialog = false
@@ -132,7 +128,7 @@ export default {
         this.$successMsg('添加成功')
         this.hideBox()
         this.getMenus()
-        this.updateList()
+        this.$parent.getMenuList()
       })
     },
     // 编辑菜单
@@ -146,7 +142,7 @@ export default {
         this.$successMsg('编辑成功')
         this.hideBox()
         this.getMenus()
-        this.updateList()
+        this.$parent.getMenuList()
       })
     },
     // 选择icon

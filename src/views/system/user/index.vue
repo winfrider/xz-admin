@@ -57,17 +57,41 @@
                   :value="item.value"
                 ></el-option>
               </el-select>
-              <el-button icon="el-icon-search" class="margin-box" circle></el-button>
+              <el-button icon="el-icon-search" class="margin-box" @click="search_2" circle></el-button>
               <el-button
                 type="primary"
                 icon="el-icon-plus"
                 class="margin-box"
                 @click="showAddUser"
+                title="添加新用户"
+                circle
+              ></el-button>
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                class="margin-box"
+                @click="deleteAll"
+                :disabled="!selectList.length"
+                title="批量删除"
+                circle
+              ></el-button>
+              <el-button
+                type="warning"
+                icon="el-icon-download"
+                class="margin-box"
+                @click="downloadUserList"
+                title="导出用户列表"
                 circle
               ></el-button>
             </el-row>
           </div>
-          <el-table :data="userList" :highlight-current-row="true" style="width: 100%;">
+          <el-table 
+          :data="userList" 
+          :highlight-current-row="true" 
+          style="width: 100%;"
+          @selection-change="handleSelectionChange"
+          :row-key="getRowKey">
+            <el-table-column type="selection" width="55" />
             <el-table-column label="用户名" :show-overflow-tooltip="true">
               <template slot-scope="scope">
                 <span style="margin-left: 10px">{{ scope.row.username }}</span>
@@ -138,7 +162,7 @@
         </el-card>
       </el-col>
     </el-row>
-    <eForm ref="form" :is-add="isAdd" :dicts="dicts" @updateUserList="getUserList" />
+    <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
   </div>
 </template>
 
@@ -187,7 +211,8 @@ export default {
           label: "锁定"
         }
       ],
-      userList: []
+      userList: [],
+      selectList: []
     };
   },
   created() {
@@ -199,6 +224,40 @@ export default {
     this.getUserList();
   },
   methods: {
+    getRowKey(row) {
+      return row.id;
+    },
+    // 选择标签
+    handleSelectionChange(val) {
+      this.selectList = val;
+    },
+    // 导出用户列表
+    downloadUserList() {
+      this.$http_json({
+        url: "/api/user/download",
+        responseType: 'blob',
+        method: "get"
+      }).then(result => {
+        this.$download(result.data, `用户列表-${this.$formDate(new Date(), true)}.xls`, true)
+      }).catch(e => {
+        console.log(e)
+      })
+    },
+    // 删除选中用户
+    deleteAll() {
+      this.$showMsgBox({
+        msg: `<p>是否删除选中用户?</p>`,
+        isHTML: true
+      }).then(() => {
+        // this.$http_json({
+        //   url: `/api/user/del/${item.id}`,
+        //   method: "post"
+        // }).then(() => {
+        //   this.$successMsg("删除成功");
+        //   this.getUserList();
+        // });
+      });
+    },
     // 删除用户
     deleteUserItem(item) {
       this.$showMsgBox({

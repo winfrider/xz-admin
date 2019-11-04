@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="dialog" :title="isAdd ? '新增权限' : '编辑权限'" append-to-body width="500px">
-    <el-form ref="authorityForm" :model="authorityForm" :rules="rules" size="small" label-width="80px">
+    <el-form status-icon ref="authorityForm" :model="authorityForm" :rules="rules" size="small" label-width="80px">
       <el-form-item label="名称" prop="name">
         <el-input v-model="authorityForm.name" style="width: 360px;"/>
       </el-form-item>
@@ -45,10 +45,6 @@ export default {
     this.getPermissions()
   },
   methods: {
-    // 更新列表
-    updateList() {
-      this.$emit("updateAuthorityList")
-    },
     // 隐藏窗口
     hideBox() {
       this.dialog = false
@@ -80,7 +76,7 @@ export default {
         this.$successMsg('添加成功')
         this.hideBox()
         this.getPermissions()
-        this.updateList()
+        this.$parent.getAuthorityList()
       })
     },
     // 编辑权限
@@ -94,7 +90,7 @@ export default {
         this.$successMsg('编辑成功')
         this.hideBox()
         this.getPermissions()
-        this.updateList()
+        this.$parent.getAuthorityList()
       })
     },
     // 重置表单

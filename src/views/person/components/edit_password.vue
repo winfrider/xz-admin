@@ -1,14 +1,14 @@
 <template>
     <el-dialog :visible.sync="dialog" title="修改密码" append-to-body width="500px">
-    <el-form ref="userForm" :model="userForm" :rules="rules" size="small" label-width="80px">
+    <el-form status-icon ref="userForm" :model="userForm" :rules="rules" size="small" label-width="80px">
       <el-form-item label="旧密码" prop="oldPass">
         <el-input v-model="userForm.oldPass" style="width: 360px;"/>
       </el-form-item>
       <el-form-item label="新密码" prop="newPass">
-        <el-input v-model="userForm.newPass" style="width: 360px;"/>
+        <el-input v-model="userForm.newPass" type="password" style="width: 360px;"/>
       </el-form-item>
       <el-form-item label="确认密码" prop="checkPass">
-        <el-input v-model="userForm.checkPass" style="width: 360px;"/>
+        <el-input v-model="userForm.checkPass" type="password" style="width: 360px;"/>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">

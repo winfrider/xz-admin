@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="dialog" :title="isAdd ? '新增用户' : '编辑用户'" width="570px">
-    <el-form ref="userForm" :inline="true" :model="userForm" :rules="rules" size="small" label-width="66px">
+    <el-form status-icon ref="userForm" :inline="true" :model="userForm" :rules="rules" size="small" label-width="66px">
       <el-form-item label="用户名" prop="username">
         <el-input v-model="userForm.username"/>
       </el-form-item>
@@ -99,10 +99,6 @@ export default {
     }
   },
   methods: {
-    // 更新列表
-    updateList() {
-      this.$emit("updateUserList")
-    },
     // 判断电话是否有效
     isvalidPhone(str) {
       const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
@@ -154,7 +150,7 @@ export default {
       }).then(result => {
         this.$successMsg('添加成功')
         this.hideBox()
-        this.updateList()
+        this.$parent.getUserList()
       })
     },
     // 编辑用户
@@ -167,7 +163,7 @@ export default {
       }).then(result => {
         this.$successMsg('编辑成功')
         this.hideBox()
-        this.updateList()
+        this.$parent.getUserList()
       })
     },
     // 重置表单

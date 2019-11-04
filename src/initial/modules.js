@@ -5,16 +5,18 @@ import Database from '@/api/database/database'
 import Http from '@/api/http/http'
 // 引入全局提示模块
 import Message from '@/api/message/message'
-// 引入element-ui框架
-import ElementUI from 'element-ui'
-// 引入iview框架
-import { Drawer } from 'iview'
+import Notification from '@/api/message/notification'
 // 引入markdown编辑器
 import mavonEditor from 'mavon-editor'
 // 引入导航栏折叠
 import Fragment from 'vue-fragment'
+// 引入图片剪裁组件
+import VueCropper from 'vue-cropper'
 // 引入icon组件
 import '@/icons'
+// 引入UI框架
+import './UI/elementUI'
+import './UI/iviewUI'
 // 引入全局样式
 import '@/global/css/style.css'
 import '@/api/iconfont/iconfont'
@@ -50,6 +52,10 @@ import PreviewFile from '@/api/file/preview_file'
 import JsonPretty from '@/api/json/json_pretty'
 // 引入图片加载动画模块
 import ImageLoad from '@/api/other/image_load'
+// 引入排序函数
+import SortList from '@/api/other/sort'
+// 引入图片加载动画模块
+import DefaultConfig from '@/global/js/config'
 /**
  * @author xuanzai
  * @description 连接数据库
@@ -99,14 +105,24 @@ Vue.prototype.$find = Database.update
 Vue.prototype.$http_normal = Http.http_normal
 Vue.prototype.$http_json = Http.http_json
 Vue.prototype.$http_file = Http.http_file
+Vue.prototype.$http = Http.axios
 /**
  * @author xuanzai
  * @description 引入全局提示
- * @param {String} msg 成功提示
+ * @param {String} msg 提示内容
  */
 Vue.prototype.$successMsg = Message.successMsg
 Vue.prototype.$warnMsg = Message.warnMsg
 Vue.prototype.$errorMsg = Message.errorMsg
+/**
+ * @author xuanzai
+ * @description 引入全局通知
+ * @param {String} msg 通知内容
+ * @param {String} title 标题
+ */
+Vue.prototype.$successTip = Notification.successTip
+Vue.prototype.$warnTip = Notification.warnTip
+Vue.prototype.$errorTip = Notification.errorTip
 /**
  * @author xuanzai
  * @description 引入全局弹框
@@ -115,6 +131,14 @@ Vue.prototype.$errorMsg = Message.errorMsg
  * @param {Boolean} isHTML 内容是否为html
  */
 Vue.prototype.$showMsgBox = Message.showMsgBox
+/**
+ * @author xuanzai
+ * @description 引入全局弹框
+ * @param {String} title 标题
+ * @param {String} msg 内容
+ * @param {Boolean} isHTML 内容是否为html
+ */
+Vue.prototype.$showTipDiy = Notification.showTipDiy
 /**
  * @author xuanzai
  * @description 引入时间格式化函数
@@ -201,7 +225,9 @@ Vue.prototype.$previewFile = PreviewFile
 /**
  * @author xuanzai
  * @description 下载文件
- * @param {String} url 地址
+ * @param {String} url 下载路径
+ * @param {String} fileName 文件名称
+ * @param {Boolean} isBlob 是否为二进制文件
  */
 Vue.prototype.$download = Download
 /**
@@ -231,15 +257,27 @@ Vue.prototype.$jsonPretty = JsonPretty
  * @param {String} url
  */
 Vue.prototype.$imageLoad = ImageLoad
-// 加入element-ui组件
-Vue.use(ElementUI)
+/**
+ * @author xuanzai
+ * @description 排序
+ * @param {Array} list 需要排序的数组
+ * @param {Boolean} isDes 是否倒序
+ * @param {String} property 如果排序元素为对象，可指定需要排序的字段
+ * @returns {Array} 返回新的数组
+ */
+Vue.prototype.$sortList = SortList
+/**
+ * @author xuanzai
+ * @description 全局通用配置
+ */
+Vue.prototype.defaultConfig = DefaultConfig
 // 引入markdown编辑器组件
 Vue.use(mavonEditor)
-// 引入iview抽屉组件
-Vue.component('Drawer', Drawer)
 // 引入树状选择器组件
 Vue.component('treeselect', Treeselect)
 // 引入导航栏折叠
 Vue.use(Fragment.Plugin)
+// 引入图片剪裁组件
+Vue.use(VueCropper)
 
 Vue.config.productionTip = false

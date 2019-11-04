@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="dialog" :title="isAdd ? '新增角色' : '编辑角色'" append-to-body width="500px">
-    <el-form ref="roleForm" :model="roleForm" :rules="rules" size="small" label-width="80px">
+    <el-form status-icon ref="roleForm" :model="roleForm" :rules="rules" size="small" label-width="80px">
       <el-form-item label="角色名称" prop="name">
         <el-input v-model="roleForm.name" style="width: 370px;"/>
       </el-form-item>
@@ -52,10 +52,6 @@ export default {
     }
   },
   methods: {
-    // 更新数据
-    updateList() {
-        this.$emit("updateRoleList")
-    },
     // 隐藏弹窗
     hideBox() {
         this.dialog = false
@@ -94,7 +90,7 @@ export default {
         }).then(() => {
             this.$successMsg('添加成功')
             this.hideBox()
-            this.updateList()
+            this.$parent.getRoleList()
         })
     },
     // 编辑角色
@@ -107,7 +103,7 @@ export default {
         }).then(() => {
             this.$successMsg('编辑成功')
             this.hideBox()
-            this.updateList()
+            this.$parent.getRoleList()
         })
     },
     // 重置表单
