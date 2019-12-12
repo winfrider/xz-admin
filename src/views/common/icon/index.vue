@@ -1,91 +1,81 @@
 <template>
-    <div class="icon-box">
-        <el-row>
-            <el-col :span="24">
-                <el-card class="box-card">
-                    <div slot="header">
-                        <span style="font-size: 1rem">图标库</span>
+  <div class="icon-box">
+    <el-row>
+      <el-col :span="24">
+        <el-card class="box-card">
+          <div slot="header">
+            <span style="font-size: 1rem">图标库</span>
+            <i class="el-icon-question" style="float: right; font-size: 1.3rem; cursor: pointer" @click="$refs.Help.dialogVisible = true"/>
+          </div>
+          <el-tabs v-model="activeName" type="card">
+            <el-tab-pane label="Icons" name="first">
+              <div class="icon-list">
+                <div
+                  class="box"
+                  v-for="items in iconList"
+                  :key="items.key"
+                  @dblclick="copy(items.tag)"
+                >
+                  <el-tooltip class="item" effect="dark" :content="items.tag" placement="top">
+                    <div class="tip-box">
+                      <svg-icon :icon-class="items.name" />
+                      <div class="icon-name">{{items.name}}</div>
                     </div>
-                    <div class="icon-list">
-                        <div 
-                        class="box"
-                        v-for="items in iconList" 
-                        :key="items.key"
-                        @click="copy(items.tag)">
-                            <el-tooltip 
-                            class="item" 
-                            effect="dark" 
-                            :content="items.tag" 
-                            placement="top">
-                                <div class="tip-box">
-                                    <svg-icon :icon-class="items.name" />
-                                    <div class="icon-name">
-                                        {{items.name}}
-                                    </div>
-                                </div>
-                            </el-tooltip>
-                        </div>
+                  </el-tooltip>
+                </div>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="Element Icons" name="second">
+              <div class="icon-list">
+                <div
+                  class="box"
+                  v-for="items in elementIcon"
+                  :key="items.key"
+                  @dblclick="copy(`<i class='${items}' />`)"
+                >
+                  <el-tooltip class="item" effect="dark" :content="`<i class='${items}' />`" placement="top">
+                    <div class="tip-box">
+                      <i :class="items" />
+                      <div class="icon-name">{{items}}</div>
                     </div>
-                </el-card>
-            </el-col>
-        </el-row>
-    </div>
+                  </el-tooltip>
+                </div>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="Font Awesome Icons" name="third">
+              <div class="icon-list">
+                <div
+                  class="box"
+                  v-for="items in fontAwesomeIcon"
+                  :key="items.key"
+                  @dblclick="copy(`<i class='fa fa-${items}' />`)"
+                >
+                  <el-tooltip class="item" effect="dark" :content="`<i class='fa fa-${items}' />`" placement="top">
+                    <div class="tip-box">
+                      <i :class="`fa fa-${items}`" />
+                      <div class="icon-name">{{items}}</div>
+                    </div>
+                  </el-tooltip>
+                </div>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </el-card>
+      </el-col>
+    </el-row>
+    <Help ref="Help" />
+  </div>
 </template>
 <script>
-import Icon from '@/components/icon_select/requireIcons'
+import Data from "./mixins/data";
+import Initial from "./mixins/initial";
+import Operation from "./mixins/operation";
+import Property from "./mixins/property";
+import Help from './components/help'
 export default {
-    data() {
-        return {
-            iconList: []
-        }
-    },
-    created() {
-        this.initialIconList()
-    },
-    methods: {
-        initialIconList() {
-            Icon.forEach((val, ind) => {
-                this.iconList.push({
-                    key: ind,
-                    name: val,
-                    tag: `<svg-icon icon-class="${val}"/>`
-                })
-            })
-        },
-        copy(str) {
-            this
-                .$copyText(str)
-                .then(() => {
-                    this.$successMsg("复制成功")
-                })
-        }
-    }
-}
+  mixins: [ Data, Initial, Operation, Property ],
+  components: { Help }
+};
 </script>
 
-<style lang="scss" scoped>
-    .box {
-        position: relative;
-        display: inline-block;
-        width: 100px;
-        height: 100px;
-        margin: 1rem 1rem;
-        text-align: center;
-        border-radius: 1rem;
-        cursor: pointer;
-        transition: .3s;
-    }
-    .box:hover {
-        background: rgb(245, 245, 245);
-    }
-    .svg-icon {
-        position: relative;
-        margin-top: 15px;
-        width: 40px;
-        height: 40px;
-    }
-    .icon-name {
-        margin: .5rem 0;
-        font-size: 1rem;
-    }
-</style>
+<style lang="scss" src="./style/index.scss" scoped></style>

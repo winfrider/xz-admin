@@ -1,5 +1,3 @@
-# 开发手册
-
 ## 添加路由
 
 路由是通过后台返回的数据动态生成的，所以，只需要在菜单管理处添加菜单的同时添加组件的路径即可。
@@ -150,7 +148,33 @@ export default {
   // 是否显示自定义登录界面按钮
   loginSetting: true,
   // 是否显示合作网站账号登录框
-  otherLoginMethods: true
+  otherLoginMethods: true,
+  // 是否显示自动登录框
+  isAutoLogin: true,
+  // 菜单颜色
+  menuStyle: {
+    light: {
+      textColor: '#444',
+      backgroundColor: '#fefefe',
+      subMenuItemBackgroundColor: '#f7f7f7'
+    },
+    dark: {
+      textColor: '#becad8',
+      backgroundColor: '#2f4055',
+      subMenuItemBackgroundColor: '#1e2c3c'
+    },
+    activeTextColor: '#429ee2'
+  },
+  // 是否显示搜索菜单icon
+  searchMenu: true,
+  // 文档icon
+  helpPage: true,
+  // 系统设置icon
+  systemSetting: true,
+  // 全屏icon
+  fullScreen: true,
+  // 布局大小icon
+  layoutSize: true
 }
 ```
 

@@ -23,7 +23,7 @@
             </el-select>
             <el-button icon="el-icon-search" class="margin-box" @click="search" circle></el-button>
       </div>
-    <el-table :data="missionLogList" :highlight-current-row="true" style="width: 100%">
+    <el-table :data="missionLogList" :highlight-current-row="true" style="width: 100%" :stripe="true">
             <el-table-column label="任务名称" :show-overflow-tooltip="true">
               <template slot-scope="scope">
                 <div slot="reference" class="name-wrapper">{{ scope.row.jobName }}</div>
@@ -56,7 +56,7 @@
             </el-table-column>
             <el-table-column label="耗时" align="center">
               <template slot-scope="scope" :show-overflow-tooltip="true">
-                <el-tag type="primary" size="small">
+                <el-tag type="primary">
                   {{ scope.row.time }}ms
                 </el-tag>
               </template>
@@ -64,7 +64,7 @@
             <el-table-column label="状态" align="center">
               <template slot-scope="scope">
                 <div slot="reference">
-                  <el-tag :type="scope.row.successful ? 'success' : 'info'" size="small">
+                  <el-tag :type="scope.row.successful ? 'success' : 'info'">
                     {{ scope.row.successful
                     ? '成功'
                     : '失败' }}
@@ -85,7 +85,8 @@
               :page-sizes="[5, 10, 15, 20]"
               :page-size.sync="nowSize"
               :pager-count="5"
-              layout="total, sizes, prev, pager, next, jumper"
+              :small="this.defaultConfig.paginationSize"
+              :layout="this.defaultConfig.paginationLayout"
               :total="totalElements"
             ></el-pagination>
     </div>

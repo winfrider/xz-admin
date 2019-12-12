@@ -2,6 +2,7 @@
     <el-dialog 
         :title="isAdd ? '添加字典详情' : '编辑字典详情'" 
         :visible.sync="isShowDetailBox"
+        append-to-body
         width="450px"
         >
             <el-form 
@@ -42,10 +43,9 @@
             <div slot="footer" class="dialog-footer">
                 <el-button
                 @click="isShowDetailBox = false"
-                size="small">取 消</el-button>
+                >取 消</el-button>
                 <el-button 
                 type="primary" 
-                size="small"
                 @click="submitForm('detailForm')">确 定</el-button>
             </div>
         </el-dialog>

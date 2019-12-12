@@ -25,7 +25,7 @@
 
 <script>
 import ScrollPane from "@/components/scrollpane";
-import { mapMutations } from 'vuex'
+import { mapMutations } from "vuex";
 export default {
   name: "Tag",
   components: { ScrollPane },
@@ -41,9 +41,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations([
-      "removeTags"
-    ]),
+    ...mapMutations(["REMOVE_TAGS"]),
     moveToCurrentTag() {
       const tags = this.$refs.tag;
       this.$nextTick(() => {
@@ -76,7 +74,7 @@ export default {
           if (item.path == this.$route.path && i != len - 1) {
             this.$router.push({ path: this.tagsList[i + 1].path });
           }
-          this.removeTags(i)
+          this.REMOVE_TAGS(i);
         }
       }
     },
@@ -96,11 +94,12 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .tags-view-container {
+  position: relative;
   height: 34px;
-  width: 100%;
+  width: calc(100% - 44px);
   background: #fff;
   border-bottom: 1px solid #d8dce5;
-  box-shadow: 2px 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12);
   .tags-view-wrapper {
     .tags-view-item {
       display: inline-block;
@@ -122,9 +121,9 @@ export default {
         margin-right: 15px;
       }
       &.active {
-        background-color: #409eff;
+        background-color: #409efe;
         color: #fff;
-        border-color: #409eff;
+        border-color: #409efe;
         &::before {
           content: "";
           background: #fff;

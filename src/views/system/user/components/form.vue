@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="dialog" :title="isAdd ? '新增用户' : '编辑用户'" width="570px">
+  <el-dialog :visible.sync="dialog" :title="isAdd ? '新增用户' : '编辑用户'" width="570px" append-to-body>
     <el-form status-icon ref="userForm" :inline="true" :model="userForm" :rules="rules" size="small" label-width="66px">
       <el-form-item label="用户名" prop="username">
         <el-input v-model="userForm.username"/>
@@ -37,8 +37,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="text" size="small" @click="hideBox">取消</el-button>
-      <el-button type="primary" size="small" @click="doSubmit">确认</el-button>
+      <el-button type="text" @click="hideBox" size="small">取消</el-button>
+      <el-button type="primary" @click="doSubmit" size="small">确认</el-button>
     </div>
   </el-dialog>
 </template>
@@ -114,11 +114,11 @@ export default {
         this.userForm.job.id = this.jobId
         this.$refs.userForm.validate((valid) => {
             if (valid) {
-                if (this.deptId === null || this.deptId === undefined) {
+                if (!this.deptId) {
                     this.$warnMsg("部门不能为空")
                     return
                 }
-                if (this.jobId === null) {
+                if (!this.jobId) {
                     this.$warnMsg("岗位不能为空")
                     return
                 }
